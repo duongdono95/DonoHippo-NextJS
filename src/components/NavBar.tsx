@@ -1,17 +1,19 @@
 import React from "react";
 import { Icons } from "./Icons";
-import {
-  ShoppingCart,
-  Store,
-  StoreIcon,
-} from "lucide-react";
+import { ShoppingCart, Store, StoreIcon } from "lucide-react";
 import { Button, Divider, IconButton } from "@mui/material";
-import { UserButton, auth } from "@clerk/nextjs";
+import { UserButton, auth, clerkClient } from "@clerk/nextjs";
 import Link from "next/link";
 
 const NavBar = () => {
   const user = auth();
-
+  // if (user && user.userId) {
+  //   const getUser = async () => {
+  //     const test = await clerkClient.users.getUser(user.userId);
+  //     console.log(test.emailAddresses[0].emailAddress);
+  //   };
+  //   getUser();
+  // }
   const isSeller = true;
   return (
     <div
@@ -20,31 +22,22 @@ const NavBar = () => {
     >
       <Icons.logo />
       <div>
-        {user ? (
+        {user && user.userId ? (
           <div className="flex items-center justify-between p-2 gap-4">
             <UserButton
               appearance={{
                 elements: {
                   card: {
-                    boxShadow:
-                      "3px 3px 10px var(--black01)",
+                    boxShadow: "3px 3px 10px var(--black01)",
                   },
                 },
               }}
             />
-            <Divider
-              orientation="vertical"
-              variant="middle"
-              flexItem
-            />
+            <Divider orientation="vertical" variant="middle" flexItem />
             <IconButton>
               <ShoppingCart size={20} />
             </IconButton>
-            <Divider
-              orientation="vertical"
-              variant="middle"
-              flexItem
-            />
+            <Divider orientation="vertical" variant="middle" flexItem />
 
             <Link href={`/sell/${user.userId}`}>
               <IconButton>
@@ -58,10 +51,7 @@ const NavBar = () => {
               <Link href={"/sign-in"}>Sign In</Link>
             </Button>
             <Button variant="contained">
-              <Link
-                href={"/sign-up"}
-                style={{ color: "white" }}
-              >
+              <Link href={"/sign-up"} style={{ color: "white" }}>
                 Create Account
               </Link>
             </Button>

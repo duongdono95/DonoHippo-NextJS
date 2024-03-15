@@ -3,6 +3,7 @@ import WrapperFullWidth from "@/components/WrapperFullWidth";
 import { auth } from "@clerk/nextjs";
 import { Button } from "@mui/material";
 import Image from "next/image";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import React, { useState } from "react";
 
@@ -16,7 +17,7 @@ const SalePage = ({ params }: Props) => {
   const { userId } = params;
 
   if (!userId) {
-    redirect("/");
+    redirect("/sign-in");
   }
   const products = [];
 
@@ -32,29 +33,16 @@ const SalePage = ({ params }: Props) => {
     return (
       <WrapperFullWidth>
         <div className="text-center p-8">
-          <p>
-            You have not added any products to sell yet.
-          </p>
+          <p>You have not added any products to sell yet.</p>
 
-          <Button
-            variant="outlined"
-            sx={{ marginTop: "16px" }}
-          >
-            Add a product
+          <Button variant="outlined" sx={{ marginTop: "16px" }}>
+            <Link href={`/products/${userId}`}> Add a product</Link>
           </Button>
 
           <div className="relative h-96 w-96 mx-auto">
-            <Image
-              src={"/hippo-empty-cart.png"}
-              fill
-              alt="empty-shop"
-            />
+            <Image src={"/hippo-empty-cart.png"} fill alt="empty-shop" />
           </div>
         </div>
-        {/* <ProductForm
-          openForm={openForm}
-          setOpenForm={setOpenForm}
-        /> */}
       </WrapperFullWidth>
     );
   }

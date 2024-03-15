@@ -9,15 +9,15 @@ const Footer = () => {
   const pathname = usePathname();
   const pathsToMinimize = [
     "/verify-email",
+    "/products",
     "/sign-up",
     "/sign-in",
   ];
-
   return (
     <footer className="bg-white flex-grow-0">
       <MaxWidthWrapper>
         <div>
-          {pathsToMinimize.includes(pathname) ? null : (
+          {pathsToMinimize.some((path) => pathname.includes(path)) ? null : (
             <div className="p-4">
               <div className="flex justify-center">
                 <Icons.logo className="h-12 w-auto" />
@@ -25,7 +25,7 @@ const Footer = () => {
             </div>
           )}
 
-          {pathsToMinimize.includes(pathname) ? null : (
+          {pathsToMinimize.some((path) => pathname.includes(path)) ? null : (
             <div>
               <div className="relative flex items-center px-6 py-6 sm:py-8 lg:mt-0">
                 <div className="absolute inset-0 overflow-hidden rounded-lg">
@@ -40,9 +40,8 @@ const Footer = () => {
                     Become a seller
                   </h3>
                   <p className="mt-2 text-sm text-muted-foreground">
-                    If you&apos;d like to sell high-quality
-                    digital products, you can do so in
-                    minutes.{" "}
+                    If you&apos;d like to sell high-quality digital products,
+                    you can do so in minutes.{" "}
                     <Link
                       href="/sign-in?as=seller"
                       className="whitespace-nowrap font-medium text-black hover:text-zinc-900"
@@ -59,8 +58,7 @@ const Footer = () => {
         <div className="py-4 md:flex md:items-center md:justify-between">
           <div className="text-center md:text-left">
             <p className="text-sm text-muted-foreground">
-              &copy; {new Date().getFullYear()} All Rights
-              Reserved
+              &copy; {new Date().getFullYear()} All Rights Reserved
             </p>
           </div>
 

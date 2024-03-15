@@ -9,10 +9,10 @@ export default authMiddleware({
 
   afterAuth(auth, req) {
     if (auth.userId && auth.isPublicRoute) {
-      let path = "/select-org";
+      let path = `/sell/${auth.userId}`;
 
       if (auth.orgId) {
-        path = `/organization/${auth.orgId}`;
+        path = `/sell/${auth.orgId}`;
       }
 
       const orgSelection = new URL(path, req.url);

@@ -9,12 +9,7 @@ const WrapperFullWidth = ({
   className?: string;
 }) => {
   return (
-    <div
-      className={cn(
-        "max-w-7xl w-full  mx-auto p-4",
-        className
-      )}
-    >
+    <div className={cn("flex-grow max-w-7xl w-full mx-auto", className)}>
       {children}
     </div>
   );

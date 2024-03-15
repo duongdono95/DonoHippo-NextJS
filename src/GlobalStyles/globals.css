@@ -13,7 +13,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 3.9%;
 
-    --primary: 27, 95, 196;
+    --primary-code: 27, 95, 196;
     --primary-foreground: 0 0% 98%;
 
     --secondary: 0 0% 96.1%;
@@ -34,15 +34,16 @@
 
     --radius: 0.5rem;
 
-    --primary09: rgba(var(--primary-code), 0.9);
-    --primary08: rgba(var(--primary-code), 0.8);
-    --primary07: rgba(var(--primary-code), 0.7);
-    --primary06: rgba(var(--primary-code), 0.6);
-    --primary05: rgba(var(--primary-code), 0.5);
-    --primary04: rgba(var(--primary-code), 0.4);
-    --primary03: rgba(var(--primary-code), 0.3);
-    --primary02: rgba(var(--primary-code), 0.2);
-    --primary01: rgba(var(--primary-code), 0.1);
+    --primary: rgba(var(--primary-code), 1);
+    --primary09: rgba(var(--primary), 0.9);
+    --primary08: rgba(var(--primary), 0.8);
+    --primary07: rgba(var(--primary), 0.7);
+    --primary06: rgba(var(--primary), 0.6);
+    --primary05: rgba(var(--primary), 0.5);
+    --primary04: rgba(var(--primary), 0.4);
+    --primary03: rgba(var(--primary), 0.3);
+    --primary02: rgba(var(--primary), 0.2);
+    --primary01: rgba(var(--primary), 0.1);
 
     --secondary09: rgba(var(--secondary-code), 0.9);
     --secondary08: rgba(var(--secondary-code), 0.8);
@@ -114,6 +115,7 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -127,10 +129,17 @@
 
 body {
   font-family: var(--font-family);
-  font-weight: 500;
   text-rendering: optimizespeed;
   overflow-y: overlay;
+  height: 100%;
+  color: var(--black07)
 }
+
+p {
+  font-size: 14px
+}
+
+
 
 a {
   text-decoration: none;
@@ -179,6 +188,7 @@ html *::-webkit-scrollbar-track {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }

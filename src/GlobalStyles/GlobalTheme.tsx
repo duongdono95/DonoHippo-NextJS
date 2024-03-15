@@ -4,10 +4,7 @@ import { createTheme } from "@mui/material/styles";
 export const GlobalTheme = createTheme({
   palette: {
     primary: {
-      main: `rgba(var(--primary))`,
-    },
-    text: {
-      primary: `rgba(var(--primary))`,
+      main: `rgba(var(--primary-code))`,
     },
   },
   components: {
@@ -21,7 +18,7 @@ export const GlobalTheme = createTheme({
           color: "white !important",
         },
         outlinedPrimary: {
-          border: "1px solid rgba(var(--primary))",
+          border: "1px solid rgba(var(--primary-code))",
         },
       },
     },

@@ -20,17 +20,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={cn(
-          "relative h-full font-sans antialiased",
-          inter.className
-        )}
+        className={cn("relative h-full font-sans antialiased", inter.className)}
       >
         <Provider>
           <main className="relative flex flex-col justify-center min-h-screen">
             <NavBar />
-            <div className="flex-grow flex-1">
-              {children}
-            </div>
+            <div className="flex flex-1">{children}</div>
+
             <Footer />
           </main>
         </Provider>
