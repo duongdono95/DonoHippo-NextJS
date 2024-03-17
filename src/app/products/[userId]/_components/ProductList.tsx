@@ -1,24 +1,49 @@
+'use client';
 import ImageSlider from '@/app/products/[userId]/_components/ImageSlider';
 import { Image as ImageType, Listing } from '@prisma/client';
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { Tooltip } from '@mui/material';
+import { Dialog, Modal, Tooltip } from '@mui/material';
 import { formatPrice } from '@/hooks/utils';
+import ListingModal from './ListingModal';
+import { FullListingType } from './ProductPageContent';
+import { toast } from 'react-toastify';
 
 interface Props {
   userId: string;
-  products: ({
-    images: ImageType[];
-  } & Listing)[];
+  products: FullListingType[];
 }
 
 const ProductList = ({ userId, products }: Props) => {
+  const [open, setOpen] = useState<{
+    open: boolean;
+    listing: FullListingType | null;
+  }>({
+    open: false,
+    listing: null,
+  });
+  const notFoundToast = () => {
+    toast.error('Listing not found, please try again later.');
+    return setOpen({
+      open: false,
+      listing: null,
+    });
+  };
   return (
     <div className=' w-full h-full'>
       <h3 className='text-center p-4 opacity-70'>Your Inventory</h3>
       <div className='flex gap-4 p-4 align-middle flex-wrap'>
         {products.map(product => (
-          <div key={product.id} className='bg-gray-100 p-4 w-1/4 rounded-md shadow-md'>
+          <div
+            key={product.id}
+            className='bg-gray-100 p-4 w-1/4 rounded-md shadow-md cursor-pointer hover:shadow-xl hover:scale-105 transition-all'
+            onClick={() =>
+              setOpen({
+                open: true,
+                listing: product,
+              })
+            }
+          >
             <ImageSlider images={product.images} />
             <h3 className='text-xl py-2 opacity-70'>{product.name}</h3>
             <Tooltip placement='right-start' title={product.description}>
@@ -28,6 +53,30 @@ const ProductList = ({ userId, products }: Props) => {
           </div>
         ))}
       </div>
+
+      <Modal
+        open={open.open}
+        onClose={() => {
+          setOpen({
+            open: false,
+            listing: null,
+          });
+        }}
+        aria-labelledby='Listing Detail - Modal'
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        {open.listing ? (
+          <ListingModal listing={open.listing} userId={userId} />
+        ) : (
+          <p className={'p-4 bg-white text-center font-medium rounded-md text-base'}>
+            Sorry, Listing was not found, please try again later.
+          </p>
+        )}
+      </Modal>
     </div>
   );
 };

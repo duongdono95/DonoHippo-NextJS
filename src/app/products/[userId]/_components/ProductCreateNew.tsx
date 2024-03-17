@@ -3,14 +3,15 @@ import React, { Suspense, useRef, useState } from 'react';
 import { Button, MenuItem, TextField } from '@mui/material';
 import { File as FileType, Image } from '@prisma/client';
 import UploadImage from '@/components/UploadImage';
-import { createListing } from '@/actions/product/createProduct/createProduct';
-import { ProductInterface } from '@/actions/product/createProduct/schema';
+
 import { Loader2 } from 'lucide-react';
 import { ZodIssue } from 'zod';
 import { toast } from 'react-toastify';
 import UploadProduct from '@/components/UploadProduct';
 import { uploadImagesToCloud } from '@/actions/Image/uploadImageToCould';
 import { uploadFilesToCloud } from '@/actions/File/uploadFileToCould';
+import { ProductInterface } from '@/actions/listing/createListing/schema';
+import { createListing } from '@/actions/listing/createListing/createListing';
 
 interface Props {
   userId: string;
@@ -25,9 +26,9 @@ export type ProductFileInterface = {
   name: string;
   file: FileType;
 };
+export const listingTags: ('Digital Image' | 'Digital Product')[] = ['Digital Image', 'Digital Product'];
 
 const ProductCreateNew = ({ userId }: Props) => {
-  const tags = ['Digital Image', 'Digital Product'];
   const emptyForm: ProductInterface = {
     userId: userId,
     name: '',
@@ -42,53 +43,34 @@ const ProductCreateNew = ({ userId }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [imgFiles, setImgFiles] = useState<ImageFileInterface[]>([]);
   const [productFiles, setProductFiles] = useState<ProductFileInterface[]>([]);
-  // const uploadImgToCloud = async () => {
-  //   if (imgFiles.length === 0) return { code: 300 };
-  //   const uploadImagesResult = await uploadImagesToCloud(imgFiles, form);
-  //   if (!uploadImagesResult || uploadImagesResult.length === 0) return { code: 300 };
-  //   setForm(prev => ({ ...prev, images: uploadImagesResult }));
-  //   return { code: 200 };
-  // };
-  // const uploadFileToCloud = async () => {
-  //   if (productFiles.length === 0) return { code: 300 };
-  //   const uploadFileResult = await uploadFilesToCloud(productFiles, form);
-  //   if (!uploadFileResult || uploadFileResult.length === 0) return { code: 300 };
-  //   setForm(prev => ({ ...prev, files: uploadFileResult }));
-  //   return { code: 200 };
-  // };
-  // const handleCreateListing = async () => {
-  //   console.log('test');
-  //   setIsLoading(true);
-  //   const result = await createListing(form);
-  //   console.log(result);
-  //   if (result.zodError) {
-  //     setErrors(result.zodError);
-  //     return { code: 300 };
-  //   }
-  //   console.log(result);
-  //   if (result.data) {
-  //     toast.success('Listing created successfully');
-  //     setIsLoading(false);
-  //     setForm(emptyForm);
-  //   }
-  // };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+
     if (imgFiles.length === 0 || productFiles.length === 0) return;
     const uploadImagesResult = await uploadImagesToCloud(imgFiles, form);
-    if (!uploadImagesResult || uploadImagesResult.length === 0) return;
+    if (!uploadImagesResult || uploadImagesResult.length === 0) {
+      toast.error('Error uploading Images');
+      return setIsLoading(false);
+    }
 
     const uploadFileResult = await uploadFilesToCloud(productFiles, form);
-    if (!uploadFileResult || uploadFileResult.length === 0) return;
+    if (!uploadFileResult || uploadFileResult.length === 0) {
+      toast.error('Error uploading files');
+      return setIsLoading(false);
+    }
 
-    console.log('test');
-    setIsLoading(true);
-    const result = await createListing(form);
-    console.log(result);
+    const newForm: ProductInterface = {
+      ...form,
+      images: uploadImagesResult,
+      files: uploadFileResult,
+    };
+    const result = await createListing(newForm);
     if (result.zodError) {
       setErrors(result.zodError);
       return { code: 300 };
     }
-    console.log(result);
     if (result.data) {
       toast.success('Listing created successfully');
       setIsLoading(false);
@@ -134,11 +116,11 @@ const ProductCreateNew = ({ userId }: Props) => {
         onChange={e =>
           setForm({
             ...form,
-            description: e.target.value,
+            tag: e.target.value as 'Digital Image' | 'Digital Product',
           })
         }
       >
-        {tags.map(tag => (
+        {listingTags.map(tag => (
           <MenuItem key={tag} value={tag}>
             {tag}
           </MenuItem>

@@ -17,7 +17,6 @@ interface Props {
 const ImageSlider = ({ images }: Props) => {
   const [swiper, setSwiper] = useState<null | SwiperType>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-
   const [slideConfig, setSlideConfig] = useState({
     isBeginning: true,
     isEnd: activeIndex === (images.length ?? 0) - 1,
@@ -38,7 +37,7 @@ const ImageSlider = ({ images }: Props) => {
   const inactiveStyles = 'hidden text-gray-400';
 
   return (
-    <div className='group relative bg-zinc-100 aspect-square overflow-hidden rounded-xl'>
+    <div className='group relative bg-zinc-100 aspect-square overflow-hidden rounded-xl '>
       <div className='absolute z-10 inset-0 opacity-0 group-hover:opacity-100 transition'>
         <button
           onClick={e => {

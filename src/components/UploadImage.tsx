@@ -3,7 +3,7 @@ import { Button, IconButton, MenuItem, TextField } from '@mui/material';
 import Image from 'next/image';
 import { Check, Trash } from 'lucide-react';
 import { toast } from 'react-toastify';
-import { ProductInterface } from '@/actions/product/createProduct/schema';
+import { ProductInterface } from '@/actions/product/createListing/schema';
 import { ImageFileInterface } from '@/app/products/[userId]/_components/ProductCreateNew';
 import { ZodIssue } from 'zod';
 

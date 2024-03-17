@@ -19,12 +19,12 @@ const ProductPage = async ({ params }: Props) => {
     },
     include: {
       images: true,
+      files: true,
     },
   });
   if (!userId) {
     redirect('/sign-in');
   }
-  const user = auth();
   return (
     <WrapperFullWidth>
       <ProductPageContent userId={userId} products={products} />

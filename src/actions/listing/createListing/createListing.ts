@@ -5,6 +5,7 @@ import { ProductInterface, ReturnT, productSchema } from './schema';
 import { TValidateDataHook, safeParseHook } from '@/hooks/validateDataHook';
 
 export const createListing = async (inputData: ProductInterface): Promise<ReturnT> => {
+  console.log('executed')
   const validatedData = safeParseHook(productSchema, inputData);
   if (!validatedData.validatedData) return validatedData;
 

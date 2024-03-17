@@ -3,16 +3,19 @@ import SideBar from '@/app/products/[userId]/_components/SideBar';
 import React from 'react';
 import ProductCreateNew from './ProductCreateNew';
 import ProductList from './ProductList';
-import { Image, Listing } from '@prisma/client';
+import { Image, Listing, File } from '@prisma/client';
 import { menuItemType, productPageStore } from './store-product-page';
 
 export const menuList: menuItemType[] = ['Products', 'Create New', 'Media', 'Files', 'Orders'];
 
+export type FullListingType = {
+  images: Image[];
+  files: File[];
+} & Listing;
+
 interface Props {
   userId: string;
-  products: ({
-    images: Image[];
-  } & Listing)[];
+  products: FullListingType[];
 }
 const ProductPageContent = ({ userId, products }: Props) => {
   const { active } = productPageStore();

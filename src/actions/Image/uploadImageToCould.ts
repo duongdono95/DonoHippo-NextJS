@@ -1,4 +1,4 @@
-import { ProductInterface } from '@/actions/product/createProduct/schema';
+import { ProductInterface } from '@/actions/product/createListing/schema';
 import { ImageFileInterface, ProductFileInterface } from '@/app/products/[userId]/_components/ProductCreateNew';
 import { Image } from '@prisma/client';
 

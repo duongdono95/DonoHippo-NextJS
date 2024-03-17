@@ -10,15 +10,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum ListingStatus {
+  active
+  deactive
+}
+
+
 model Listing {
   id            String    @id @default(auto()) @map("_id") @db.ObjectId
   userId        String    @unique
-  name          String    
+  name          String
   description   String
-  tag           String 
+  tag           String
   price         Int
   images        Image[]
   files         File[]
+  status        ListingStatus @default(deactive)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
@@ -27,8 +34,9 @@ model Image {
   id            String    @id @default(auto()) @map("_id") @db.ObjectId
   listingId     String    @db.ObjectId
   listing       Listing   @relation(fields: [listingId], references: [id])
+
   userId        String    @unique
-  name          String   
+  name          String
   imageUrl      String
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -38,8 +46,9 @@ model File {
   id            String    @id @default(auto()) @map("_id") @db.ObjectId
   listingId     String    @db.ObjectId
   listing       Listing   @relation(fields: [listingId], references: [id])
+
   userId        String    @unique
-  name          String   
+  name          String
   fileUrl       String
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
