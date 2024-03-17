@@ -1,7 +1,9 @@
-import WrapperFullWidth from "@/components/WrapperFullWidth";
-import { redirect } from "next/navigation";
-import React, { useState } from "react";
-import ProductPageContent from "./_components/ProductPageContent";
+import WrapperFullWidth from '@/components/WrapperFullWidth';
+import { redirect } from 'next/navigation';
+import React, { useState } from 'react';
+import ProductPageContent from './_components/ProductPageContent';
+import { db } from '@/libs/db';
+import { auth } from '@clerk/nextjs';
 
 interface Props {
   params: {
@@ -9,15 +11,23 @@ interface Props {
   };
 }
 
-const ProductPage = ({ params }: Props) => {
+const ProductPage = async ({ params }: Props) => {
   const { userId } = params;
-
+  const products = await db.listing.findMany({
+    where: {
+      userId: userId,
+    },
+    include: {
+      images: true,
+    },
+  });
   if (!userId) {
-    redirect("/sign-in");
+    redirect('/sign-in');
   }
+  const user = auth();
   return (
     <WrapperFullWidth>
-      <ProductPageContent userId={userId} />
+      <ProductPageContent userId={userId} products={products} />
     </WrapperFullWidth>
   );
 };
