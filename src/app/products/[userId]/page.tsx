@@ -13,22 +13,9 @@ interface Props {
 
 const ProductPage = async ({ params }: Props) => {
   const { userId } = params;
-  const products = await db.listingInterface.findMany({
-    where: {
-      userId: userId,
-    },
-    include: {
-      images: true,
-      files: true,
-    },
-  });
-  console.log(products);
-  if (!userId) {
-    redirect('/sign-in');
-  }
   return (
     <WrapperFullWidth>
-      <ProductPageContent userId={userId} products={products} />
+      <ProductPageContent userId={userId} />
     </WrapperFullWidth>
   );
 };

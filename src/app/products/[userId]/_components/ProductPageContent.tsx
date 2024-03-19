@@ -11,16 +11,15 @@ export const menuList: menuItemType[] = ['Products', 'Create New', 'Media', 'Fil
 
 interface Props {
   userId: string;
-  products: FullListingType[];
 }
-const ProductPageContent = ({ userId, products }: Props) => {
+const ProductPageContent = ({ userId }: Props) => {
   const { active } = productPageStore();
   return (
     <div className='flex h-full'>
       <SideBar />
       <div className={'flex-1'}>
         {active === 'Create New' ? <ProductCreateNew userId={userId} /> : null}
-        {active === 'Products' ? <ProductList userId={userId} products={products} /> : null}
+        {/* {active === 'Products' ? <ProductList userId={userId} products={products} /> : null} */}
         {active === 'Media' ? <MediaList userId={userId} /> : null}
       </div>
     </div>

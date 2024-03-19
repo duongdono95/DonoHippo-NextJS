@@ -1,16 +1,19 @@
 'use client';
-import React, { Suspense, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { Button, MenuItem, TextField } from '@mui/material';
 
 import UploadImage from '@/components/UploadImage';
 
 import { Loader2 } from 'lucide-react';
 import { ZodIssue } from 'zod';
-import { toast } from 'react-toastify';
+
 import UploadProduct from '@/components/UploadProduct';
-import { uploadImagesToCloud } from '@/actions/Image/uploadImageToCould';
-import { uploadFilesToCloud } from '@/actions/File/uploadFileToCould';
-import { ProductInterface } from '@/actions/listing/createListing/schema';
+import { ProductInterface, productSchema } from '@/actions/listing/createListing/schema';
+import { imagesCloudinary } from '@/actions/Image/imagesCloudinary';
+import { createBulkImages } from '@/actions/Image/createBulkImages';
+import { toast } from 'react-toastify';
+import { filesCloudinary } from '@/actions/File/filesCloudinary';
+import { createBulkFiles } from '@/actions/File/createBulkFiles';
 import { createListing } from '@/actions/listing/createListing/createListing';
 
 interface Props {
@@ -37,8 +40,6 @@ const ProductCreateNew = ({ userId }: Props) => {
     description: '',
     tag: 'Digital Image',
     price: 0,
-    images: [],
-    files: [],
   };
   const [form, setForm] = React.useState<ProductInterface>(emptyForm);
   const [errors, setErrors] = useState<ZodIssue[]>([]);
@@ -48,37 +49,36 @@ const ProductCreateNew = ({ userId }: Props) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (imgFiles.length === 0 || productFiles.length === 0) return;
+    const validateForm = productSchema.safeParse(form);
+    if (!validateForm.success) {
+      setErrors(validateForm.error.errors);
+      return;
+    }
+    if (imgFiles.length === 0 || productFiles.length === 0)
+      return toast.error('Please select at least one image and one product file.');
     setIsLoading(true);
+    const pushImagesToCloudResults = await imagesCloudinary(imgFiles, userId);
+    const createImagesInDB = await createBulkImages(pushImagesToCloudResults);
+    if (createImagesInDB.length === 0) return toast.error('Create New Images failed, please try again.');
+    const pushProductToCloudResults = await filesCloudinary(productFiles, userId);
+    const createFilesInDB = await createBulkFiles(pushProductToCloudResults);
+    if (createFilesInDB.length === 0) return toast.error('Create New Files failed, please try again.');
 
-    const uploadImagesResult = await uploadImagesToCloud(imgFiles, form.userId);
-    if (!uploadImagesResult || uploadImagesResult.length === 0) {
-      toast.error('Error uploading Images');
-      return setIsLoading(false);
-    }
-
-    const uploadFileResult = await uploadFilesToCloud(productFiles, form.userId);
-    if (!uploadFileResult || uploadFileResult.length === 0) {
-      toast.error('Error uploading files');
-      return setIsLoading(false);
-    }
-    console.log(uploadImagesResult);
-    console.log(uploadFileResult);
-    const newForm: ProductInterface = {
+    const createListingResult = await createListing({
       ...form,
-      images: uploadImagesResult,
-      files: uploadFileResult,
-    };
-    const result = await createListing(newForm);
-    if (result.zodError) {
-      setErrors(result.zodError);
-      return { code: 300 };
+      imgIds: createImagesInDB,
+      fileIds: createFilesInDB,
+    });
+    if (!createListingResult) {
+      toast.error('Create Listing Failed, please try again.');
     }
-    if (result.data) {
-      toast.success('Listing created successfully');
-      setIsLoading(false);
+    if (createListingResult) {
+      toast.success('Create Listing Success');
       setForm(emptyForm);
+      setImgFiles([]);
+      setProductFiles([]);
     }
+    setIsLoading(false);
   };
   return (
     <form className={'flex flex-col gap-4 px-8 max-w-md mx-auto'} onSubmit={handleSubmit}>

@@ -6,4 +6,4 @@ export const fileSchema = z.object({
   fileUrl: z.string(),
 });
 
-export type FileInterface = z.infer<typeof fileSchema>;
+export type FileSchemaT = z.infer<typeof fileSchema>;

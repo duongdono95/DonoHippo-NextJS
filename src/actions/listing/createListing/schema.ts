@@ -12,22 +12,6 @@ export const productSchema = z.object({
   }),
   tag: z.enum(['Digital Image', 'Digital Product']),
   price: z.number().min(0),
-  images: z.array(ImageSchema).refine(images => images.length > 0, {
-    message: 'At least one Thumbnail Photo is required',
-  }),
-  files: z.array(fileSchema).refine(images => images.length > 0, {
-    message: 'At least one File is required',
-  }),
 });
 
 export type ProductInterface = z.infer<typeof productSchema>;
-
-export type ReturnT = TValidateDataHook<ProductInterface, ListingInterface> & {
-  error?: string;
-  data?: ListingInterface;
-};
-
-export type FullListingType = {
-  images: ImageInterface[];
-  files: FileInterface[];
-} & ListingInterface;

@@ -3,9 +3,12 @@ import { Button, Dialog, IconButton, MenuItem, Modal, TextField, styled } from '
 import Image from 'next/image';
 import { Check, CloudUploadIcon, Trash } from 'lucide-react';
 import { toast } from 'react-toastify';
-import { ImageFileInterface } from '@/app/products/[userId]/_components/ProductCreateNew';
+import { ImageInputType } from '@/app/products/[userId]/_components/ProductCreateNew';
 import { ZodIssue } from 'zod';
 import MediaModal from './modals/MediaModal';
+import { useQuery } from '@tanstack/react-query';
+import { fetcher } from '@/hooks/fetcher';
+import { ImageInterface } from '@prisma/client';
 
 export const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -23,10 +26,16 @@ interface Props {
   userId: string;
   errors: ZodIssue[];
   setErrors: React.Dispatch<React.SetStateAction<ZodIssue[]>>;
-  imgFiles: ImageFileInterface[];
-  setImgFiles: React.Dispatch<React.SetStateAction<ImageFileInterface[]>>;
+  imgFiles: ImageInputType[];
+  setImgFiles: React.Dispatch<React.SetStateAction<ImageInputType[]>>;
 }
 const UploadImage = ({ userId, errors, setErrors, imgFiles, setImgFiles }: Props) => {
+  const { data: userImages } = useQuery<ImageInterface[]>({
+    queryKey: ['images'],
+    queryFn: () => fetcher(`/api/media/${userId}`),
+  });
+  const allImgNames = userImages?.map(img => img.name) ?? [];
+
   const [openMedia, setOpenMedia] = useState<boolean>(false);
   const maxImagesUpload: number = 10;
   const maxSizeInMB: number = 10;
@@ -39,11 +48,15 @@ const UploadImage = ({ userId, errors, setErrors, imgFiles, setImgFiles }: Props
         toast.error(`File ${file.name} is too large. Max size is ${maxSizeInMB}MB.`);
         continue;
       }
-      const fileUrl: ImageFileInterface = {
+      const fileUrl: ImageInputType = {
         userId: userId,
         name: file.name,
         file: file,
       };
+      if (allImgNames.includes(fileUrl.name)) {
+        toast.error(`File ${fileUrl.name} already exists in your media library, please select a new file!`);
+        return;
+      }
       setImgFiles(prev => [...prev, fileUrl]);
     }
   };

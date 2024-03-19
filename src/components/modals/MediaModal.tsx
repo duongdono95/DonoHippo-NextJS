@@ -2,13 +2,13 @@ import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 import { fetcher } from '@/hooks/fetcher';
 import Image from 'next/image';
-import { ImageFileInterface } from '@/app/products/[userId]/_components/ProductCreateNew';
+import { ImageInputType } from '@/app/products/[userId]/_components/ProductCreateNew';
 import { CircleCheck } from 'lucide-react';
 import { ImageInterface } from '@prisma/client';
 interface Props {
   userId: string;
-  imgFiles: ImageFileInterface[];
-  setImgFiles: React.Dispatch<React.SetStateAction<ImageFileInterface[]>>;
+  imgFiles: ImageInputType[];
+  setImgFiles: React.Dispatch<React.SetStateAction<ImageInputType[]>>;
 }
 
 const MediaModal = ({ userId, imgFiles, setImgFiles }: Props) => {
@@ -22,7 +22,8 @@ const MediaModal = ({ userId, imgFiles, setImgFiles }: Props) => {
       <h3 className='p-4 bg-slate-100 opacity-70 text-center' style={{ borderBottom: '1px solid var(--primary)' }}>
         Media ({(data && data.length) ?? 0})
       </h3>
-      <div className='p-2 flex gap-2 flex-wrap'>
+      <div className='p-2 min-w-52 min-h- flex gap-2 flex-wrap'>
+        {!data && <p>Oops!! No image was found.</p>}
         {data &&
           data.map((image: any) => {
             const isSelected = selectedImgNames.includes(image.name);
@@ -33,7 +34,7 @@ const MediaModal = ({ userId, imgFiles, setImgFiles }: Props) => {
                   if (isSelected) {
                     setImgFiles(prev => prev.filter(img => img.name !== image.name));
                   } else {
-                    setImgFiles(prev => [...prev, { userId, name: image.name, file: null, fileUrl: image.imageUrl }]);
+                    setImgFiles(prev => [...prev, { userId, name: image.name, file: null, fileUrl: image.fileUrl }]);
                   }
                 }}
               >

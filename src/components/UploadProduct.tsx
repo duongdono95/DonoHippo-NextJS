@@ -4,18 +4,27 @@ import Image from 'next/image';
 import { Check, Trash, CloudUploadIcon } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { ZodIssue } from 'zod';
-import { ProductFileInterface } from '@/app/products/[userId]/_components/ProductCreateNew';
+import { ProductInputType } from '@/app/products/[userId]/_components/ProductCreateNew';
 import { VisuallyHiddenInput } from './UploadImage';
 import FileModal from './modals/FileModal';
+import { useQuery } from '@tanstack/react-query';
+import { fetcher } from '@/hooks/fetcher';
+import { FileInterface } from '@prisma/client';
 
 interface Props {
   userId: string;
   errors: ZodIssue[];
   setErrors: React.Dispatch<React.SetStateAction<ZodIssue[]>>;
-  productFiles: ProductFileInterface[];
-  setProductFiles: React.Dispatch<React.SetStateAction<ProductFileInterface[]>>;
+  productFiles: ProductInputType[];
+  setProductFiles: React.Dispatch<React.SetStateAction<ProductInputType[]>>;
 }
 const UploadProduct = ({ userId, errors, setErrors, productFiles, setProductFiles }: Props) => {
+  const { data: uploadedFiles } = useQuery<FileInterface[]>({
+    queryKey: ['files'],
+    queryFn: () => fetcher(`/api/files/${userId}`),
+  });
+  const allUploadedFileNames = uploadedFiles?.map(item => item.name) ?? [];
+
   const [openMedia, setOpenMedia] = useState<boolean>(false);
   const maxImagesUpload: number = 10;
   const maxSizeInMB: number = 10;
@@ -28,7 +37,14 @@ const UploadProduct = ({ userId, errors, setErrors, productFiles, setProductFile
         toast.error(`File ${file.name} is too large. Max size is ${maxSizeInMB}MB.`);
         continue;
       }
-      const fileUrl: ProductFileInterface = {
+      console.log(allUploadedFileNames);
+      if (allUploadedFileNames.includes(file.name)) {
+        console.log(allUploadedFileNames);
+        console.log(file.name);
+        toast.error(`File ${file.name} already exists in your media library, please select a new file!`);
+        return;
+      }
+      const fileUrl: ProductInputType = {
         userId: userId,
         name: file.name,
         file: file,

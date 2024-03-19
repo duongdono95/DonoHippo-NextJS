@@ -4,17 +4,14 @@ import ImageSlider from '../ImageSlider';
 import { Button, MenuItem, TextField } from '@mui/material';
 import EditableTextField from '../../app/products/[userId]/_components/EditableTextField';
 import {
-  ImageFileInterface,
-  ProductFileInterface,
+  ImageInputType,
+  ProductInputType,
   listingTags,
 } from '../../app/products/[userId]/_components/ProductCreateNew';
 import UploadImage from '../UploadImage';
 import UploadProduct from '../UploadProduct';
 import { ZodIssue } from 'zod';
-import { updateListing } from '@/actions/listing/createListing/updateListing';
-import { uploadImagesToCloud } from '@/actions/Image/uploadImageToCould';
-import { uploadFilesToCloud } from '@/actions/File/uploadFileToCould';
-import { toast } from 'react-toastify';
+
 import { FullListingType } from '@/actions/listing/createListing/schema';
 
 interface Props {
@@ -29,32 +26,31 @@ const ListingModal = ({ listing, userId }: Props) => {
   };
   const [errors, setErrors] = React.useState<ZodIssue[]>([]);
 
-  const convertedImgs: ImageFileInterface[] = localListing.images.map(img => ({
+  const convertedImgs: ImageInputType[] = localListing.images.map(img => ({
     userId: img.userId,
     file: null,
     fileUrl: img.imageUrl,
     name: img.name,
   }));
-  const convertedFiles: ProductFileInterface[] = localListing.files.map(file => ({
+  const convertedFiles: ProductInputType[] = localListing.files.map(file => ({
     userId: file.userId,
     file: null,
     fileUrl: file.fileUrl,
     name: file.name,
   }));
 
-  const [imgFiles, setImgFiles] = React.useState<ImageFileInterface[]>(convertedImgs);
-  const [productFiles, setProductFiles] = React.useState<ProductFileInterface[]>(convertedFiles);
+  const [imgFiles, setImgFiles] = React.useState<ImageInputType[]>(convertedImgs);
+  const [productFiles, setProductFiles] = React.useState<ProductInputType[]>(convertedFiles);
 
   const submitForm = async () => {
-    const newPhotos = imgFiles.filter(item => item.file !== null);
-    const uploadNewImagesResult = await uploadImagesToCloud(newPhotos, localListing.userId);
-    if (newPhotos.length > 0 && !uploadNewImagesResult) return toast.error('Upload images failed');
-
-    const newFiles = productFiles.filter(item => item.file !== null);
-    const uploadNewFileResult = await uploadFilesToCloud(productFiles, localListing.userId);
-    if (newFiles.length > 0 && !uploadNewFileResult) return toast.error('Upload files failed');
-
-    updateListing(localListing, uploadNewImagesResult, uploadNewFileResult);
+    console.log(localListing);
+    // const newPhotos = imgFiles.filter(item => item.file !== null);
+    // const uploadNewImagesResult = await uploadImagesToCloud(newPhotos, localListing.userId);
+    // if (newPhotos.length > 0 && !uploadNewImagesResult) return toast.error('Upload images failed');
+    // const newFiles = productFiles.filter(item => item.file !== null);
+    // const uploadNewFileResult = await uploadFilesToCloud(productFiles, localListing.userId);
+    // if (newFiles.length > 0 && !uploadNewFileResult) return toast.error('Upload files failed');
+    // updateListing(localListing, uploadNewImagesResult, uploadNewFileResult);
   };
   return (
     <div className='max-w-[90vw] max-h-[90vh] bg-white rounded-2xl overflow-hidden'>

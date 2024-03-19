@@ -17,14 +17,14 @@ enum ListingStatus {
 
 
 model ListingInterface {
-  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+ id            String    @id @default(auto()) @map("_id") @db.ObjectId
   userId        String    @unique
   name          String
   description   String
   tag           String
   price         Int
-  images        ImageInterface[]
-  files         FileInterface[]
+  imgIds        String[]  @db.ObjectId
+  fileIds       String[] @db.ObjectId
   status        ListingStatus @default(deactive)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -32,8 +32,6 @@ model ListingInterface {
 
 model ImageInterface {
   id            String    @id @default(auto()) @map("_id") @db.ObjectId
-  listingIds    String[]    @db.ObjectId
-  listing       ListingInterface   @relation(fields: [listingIds], references: [id])
   userId        String    @unique
   name          String
   imageUrl      String
@@ -43,8 +41,6 @@ model ImageInterface {
 
 model FileInterface {
   id            String    @id @default(auto()) @map("_id") @db.ObjectId
-  listingIds    String[]    @db.ObjectId
-  listing       ListingInterface   @relation(fields: [listingIds], references: [id])
   userId        String    @unique
   name          String
   fileUrl       String

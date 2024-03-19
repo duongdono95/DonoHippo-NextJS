@@ -1,13 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 import { fetcher } from '@/hooks/fetcher';
-import { ProductFileInterface } from '@/app/products/[userId]/_components/ProductCreateNew';
+import { ProductInputType } from '@/app/products/[userId]/_components/ProductCreateNew';
 import { CircleCheck, FileCog } from 'lucide-react';
 
 interface Props {
   userId: string;
-  productFiles: ProductFileInterface[];
-  setProductFiles: React.Dispatch<React.SetStateAction<ProductFileInterface[]>>;
+  productFiles: ProductInputType[];
+  setProductFiles: React.Dispatch<React.SetStateAction<ProductInputType[]>>;
 }
 
 const FileModal = ({ userId, productFiles, setProductFiles }: Props) => {
@@ -42,7 +42,8 @@ const FileModal = ({ userId, productFiles, setProductFiles }: Props) => {
                   if (isSelected) {
                     setProductFiles(prev => prev.filter(img => img.name !== file.name));
                   } else {
-                    setProductFiles(prev => [...prev, { userId, name: file.name, file: null, fileUrl: file.imageUrl }]);
+                    console.log();
+                    setProductFiles(prev => [...prev, { userId, name: file.name, file: null, fileUrl: file.fileUrl }]);
                   }
                 }}
               >
