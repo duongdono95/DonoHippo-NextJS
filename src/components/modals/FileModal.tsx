@@ -3,20 +3,21 @@ import React from 'react';
 import { fetcher } from '@/hooks/fetcher';
 import { ProductInputType } from '@/app/products/[userId]/_components/ProductCreateNew';
 import { CircleCheck, FileCog } from 'lucide-react';
+import { FileInterface } from '@prisma/client';
 
 interface Props {
   userId: string;
-  productFiles: ProductInputType[];
-  setProductFiles: React.Dispatch<React.SetStateAction<ProductInputType[]>>;
+  selectedFromFiles: FileInterface[];
+  setSelectedFromFiles: React.Dispatch<React.SetStateAction<FileInterface[]>>;
 }
 
-const FileModal = ({ userId, productFiles, setProductFiles }: Props) => {
-  const { data } = useQuery<File[]>({
-    queryKey: ['media', 'userId', 'images'],
+const FileModal = ({ userId, selectedFromFiles, setSelectedFromFiles }: Props) => {
+  const { data } = useQuery<FileInterface[]>({
+    queryKey: ['files', 'userId', 'images'],
     queryFn: () => fetcher(`/api/files/${userId}`),
   });
 
-  const selectedImgNames = productFiles.map(img => img.name);
+  const selectedFileNames = selectedFromFiles.map(img => img.name);
   if (!data)
     return (
       <div>
@@ -33,17 +34,18 @@ const FileModal = ({ userId, productFiles, setProductFiles }: Props) => {
       </h3>
       <div className='p-4 flex gap-2 flex-wrap'>
         {data &&
-          data.map((file: any) => {
-            const isSelected = selectedImgNames.includes(file.name);
+          data.map(file => {
+            const isSelected = selectedFileNames.includes(file.name);
             return (
               <div
+                key={file.id}
                 className='p-1 cursor-pointer hover:bg-slate-100 rounded-md'
                 onClick={() => {
                   if (isSelected) {
-                    setProductFiles(prev => prev.filter(img => img.name !== file.name));
+                    setSelectedFromFiles(prev => prev.filter(img => img.name !== file.name));
                   } else {
                     console.log();
-                    setProductFiles(prev => [...prev, { userId, name: file.name, file: null, fileUrl: file.fileUrl }]);
+                    setSelectedFromFiles(prev => [...prev, file]);
                   }
                 }}
               >

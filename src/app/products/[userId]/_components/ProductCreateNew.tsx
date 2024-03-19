@@ -15,6 +15,9 @@ import { toast } from 'react-toastify';
 import { filesCloudinary } from '@/actions/File/filesCloudinary';
 import { createBulkFiles } from '@/actions/File/createBulkFiles';
 import { createListing } from '@/actions/listing/createListing/createListing';
+import { useQuery } from '@tanstack/react-query';
+import { FileInterface, ImageInterface } from '@prisma/client';
+import { fetcher } from '@/hooks/fetcher';
 
 interface Props {
   userId: string;
@@ -34,6 +37,14 @@ export type ProductInputType = {
 export const listingTags: ('Digital Image' | 'Digital Product')[] = ['Digital Image', 'Digital Product'];
 
 const ProductCreateNew = ({ userId }: Props) => {
+  const { data: userImages } = useQuery<ImageInterface[]>({
+    queryKey: ['images'],
+    queryFn: () => fetcher(`/api/media/${userId}`),
+  });
+  const { data: userFiles } = useQuery<FileInterface[]>({
+    queryKey: ['files'],
+    queryFn: () => fetcher(`/api/files/${userId}`),
+  });
   const emptyForm: ProductInterface = {
     userId: userId,
     name: '',
@@ -41,12 +52,14 @@ const ProductCreateNew = ({ userId }: Props) => {
     tag: 'Digital Image',
     price: 0,
   };
+
   const [form, setForm] = React.useState<ProductInterface>(emptyForm);
   const [errors, setErrors] = useState<ZodIssue[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [imgFiles, setImgFiles] = useState<ImageInputType[]>([]);
+  const [selectedFromMedia, setSelectedFromMedia] = useState<ImageInterface[]>([]);
   const [productFiles, setProductFiles] = useState<ProductInputType[]>([]);
-
+  const [selectedFromFiles, setSelectedFromFiles] = useState<FileInterface[]>([]);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const validateForm = productSchema.safeParse(form);
@@ -56,18 +69,21 @@ const ProductCreateNew = ({ userId }: Props) => {
     }
     if (imgFiles.length === 0 || productFiles.length === 0)
       return toast.error('Please select at least one image and one product file.');
+
     setIsLoading(true);
+
     const pushImagesToCloudResults = await imagesCloudinary(imgFiles, userId);
     const createImagesInDB = await createBulkImages(pushImagesToCloudResults);
     if (createImagesInDB.length === 0) return toast.error('Create New Images failed, please try again.');
+
     const pushProductToCloudResults = await filesCloudinary(productFiles, userId);
     const createFilesInDB = await createBulkFiles(pushProductToCloudResults);
     if (createFilesInDB.length === 0) return toast.error('Create New Files failed, please try again.');
 
     const createListingResult = await createListing({
       ...form,
-      imgIds: createImagesInDB,
-      fileIds: createFilesInDB,
+      imgIds: createImagesInDB.map(img => img.id).concat(selectedFromMedia.map(img => img.id)),
+      fileIds: createFilesInDB.map(file => file.id).concat(selectedFromFiles.map(file => file.id)),
     });
     if (!createListingResult) {
       toast.error('Create Listing Failed, please try again.');
@@ -144,17 +160,17 @@ const ProductCreateNew = ({ userId }: Props) => {
       />
       <UploadImage
         userId={form.userId}
-        errors={errors}
-        setErrors={setErrors}
         imgFiles={imgFiles}
         setImgFiles={setImgFiles}
+        selectedFromMedia={selectedFromMedia}
+        setSelectedFromMedia={setSelectedFromMedia}
       />
       <UploadProduct
         userId={form.userId}
-        errors={errors}
-        setErrors={setErrors}
         productFiles={productFiles}
         setProductFiles={setProductFiles}
+        selectedFromFiles={selectedFromFiles}
+        setSelectedFromFiles={setSelectedFromFiles}
       />
       <Button type='submit' fullWidth variant='contained' sx={{ marginTop: '16px' }}>
         {isLoading && <Loader2 className='animated-rotation' style={{ marginRight: '5px' }} />}Create a new Listing

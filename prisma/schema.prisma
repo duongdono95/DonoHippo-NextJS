@@ -12,7 +12,7 @@ datasource db {
 
 enum ListingStatus {
   active
-  deactive
+  inactive
 }
 
 
@@ -25,7 +25,7 @@ model ListingInterface {
   price         Int
   imgIds        String[]  @db.ObjectId
   fileIds       String[] @db.ObjectId
-  status        ListingStatus @default(deactive)
+  status        ListingStatus @default(inactive)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }

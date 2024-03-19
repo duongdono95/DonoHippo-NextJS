@@ -5,18 +5,21 @@ import Image from 'next/image';
 import { ImageInputType } from '@/app/products/[userId]/_components/ProductCreateNew';
 import { CircleCheck } from 'lucide-react';
 import { ImageInterface } from '@prisma/client';
+import MaxWidthWrapper from '../MaxWidthWrapper';
 interface Props {
   userId: string;
   imgFiles: ImageInputType[];
   setImgFiles: React.Dispatch<React.SetStateAction<ImageInputType[]>>;
+  selectedFromMedia: ImageInterface[];
+  setSelectedFromMedia: React.Dispatch<React.SetStateAction<ImageInterface[]>>;
 }
 
-const MediaModal = ({ userId, imgFiles, setImgFiles }: Props) => {
+const MediaModal = ({ userId, selectedFromMedia, setSelectedFromMedia }: Props) => {
   const { data } = useQuery<ImageInterface[]>({
     queryKey: ['media', 'userId', 'images'],
     queryFn: () => fetcher(`/api/media/${userId}`),
   });
-  const selectedImgNames = imgFiles.map(img => img.name);
+  const selectedImgNames = selectedFromMedia.map(img => img.name);
   return (
     <div>
       <h3 className='p-4 bg-slate-100 opacity-70 text-center' style={{ borderBottom: '1px solid var(--primary)' }}>
@@ -25,16 +28,17 @@ const MediaModal = ({ userId, imgFiles, setImgFiles }: Props) => {
       <div className='p-2 min-w-52 min-h- flex gap-2 flex-wrap'>
         {!data && <p>Oops!! No image was found.</p>}
         {data &&
-          data.map((image: any) => {
+          data.map(image => {
             const isSelected = selectedImgNames.includes(image.name);
             return (
               <div
+                key={image.id}
                 className='relative p-1 cursor-pointer hover:bg-slate-100 rounded-md'
                 onClick={() => {
                   if (isSelected) {
-                    setImgFiles(prev => prev.filter(img => img.name !== image.name));
+                    setSelectedFromMedia(prev => prev.filter(img => img.name !== image.name));
                   } else {
-                    setImgFiles(prev => [...prev, { userId, name: image.name, file: null, fileUrl: image.fileUrl }]);
+                    setSelectedFromMedia(prev => [...prev, image]);
                   }
                 }}
               >

@@ -1,7 +1,7 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import ImageSlider from '../ImageSlider';
-import { Button, MenuItem, TextField } from '@mui/material';
+import { Button, MenuItem, Switch, TextField } from '@mui/material';
 import EditableTextField from '../../app/products/[userId]/_components/EditableTextField';
 import {
   ImageInputType,
@@ -9,49 +9,74 @@ import {
   listingTags,
 } from '../../app/products/[userId]/_components/ProductCreateNew';
 import UploadImage from '../UploadImage';
-import UploadProduct from '../UploadProduct';
-import { ZodIssue } from 'zod';
 
-import { FullListingType } from '@/actions/listing/createListing/schema';
+import { ImageInterface, ListingInterface, FileInterface } from '@prisma/client';
+import UploadProduct from '../UploadProduct';
+import { toast } from 'react-toastify';
+import { imagesCloudinary } from '@/actions/Image/imagesCloudinary';
+import { createBulkImages } from '@/actions/Image/createBulkImages';
+import { filesCloudinary } from '@/actions/File/filesCloudinary';
+import { createBulkFiles } from '@/actions/File/createBulkFiles';
+import { updateListing } from '@/actions/listing/createListing/updateListing';
+import { OpenT } from '@/app/products/[userId]/_components/ProductList';
 
 interface Props {
-  listing: FullListingType;
+  listing: ListingInterface;
   userId: string;
+  listingImgs: ImageInterface[];
+  setListingImgs: React.Dispatch<React.SetStateAction<ImageInterface[]>>;
+  listingFiles: FileInterface[];
+  setListingFiles: React.Dispatch<React.SetStateAction<FileInterface[]>>;
+  setOpen: React.Dispatch<React.SetStateAction<OpenT>>;
 }
 
-const ListingModal = ({ listing, userId }: Props) => {
+const ListingModal = ({
+  listing,
+  userId,
+  listingImgs,
+  setListingImgs,
+  listingFiles,
+  setListingFiles,
+  setOpen,
+}: Props) => {
   const [localListing, setLocalListing] = React.useState(listing);
   const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setLocalListing({ ...localListing, [e.target.name]: e.target.value });
   };
-  const [errors, setErrors] = React.useState<ZodIssue[]>([]);
-
-  const convertedImgs: ImageInputType[] = localListing.images.map(img => ({
-    userId: img.userId,
-    file: null,
-    fileUrl: img.imageUrl,
-    name: img.name,
-  }));
-  const convertedFiles: ProductInputType[] = localListing.files.map(file => ({
-    userId: file.userId,
-    file: null,
-    fileUrl: file.fileUrl,
-    name: file.name,
-  }));
-
-  const [imgFiles, setImgFiles] = React.useState<ImageInputType[]>(convertedImgs);
-  const [productFiles, setProductFiles] = React.useState<ProductInputType[]>(convertedFiles);
-
+  const [uploadedImgs, setUploadedImgs] = useState<ImageInputType[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<ProductInputType[]>([]);
   const submitForm = async () => {
-    console.log(localListing);
-    // const newPhotos = imgFiles.filter(item => item.file !== null);
-    // const uploadNewImagesResult = await uploadImagesToCloud(newPhotos, localListing.userId);
-    // if (newPhotos.length > 0 && !uploadNewImagesResult) return toast.error('Upload images failed');
-    // const newFiles = productFiles.filter(item => item.file !== null);
-    // const uploadNewFileResult = await uploadFilesToCloud(productFiles, localListing.userId);
-    // if (newFiles.length > 0 && !uploadNewFileResult) return toast.error('Upload files failed');
-    // updateListing(localListing, uploadNewImagesResult, uploadNewFileResult);
+    const listingImgIds: string[] = listingImgs.map(img => img.id);
+    const listingFilesIds: string[] = listingFiles.map(file => file.id);
+    if (uploadedImgs.length === 0 && listingImgs.length === 0) {
+      toast.error('Please upload at least one image');
+      return;
+    }
+    if (uploadedImgs.length > 0) {
+      const pushImgsToCloud = await imagesCloudinary(uploadedImgs, userId);
+      const pushImgsToDB = await createBulkImages(pushImgsToCloud);
+      pushImgsToDB.map(img => listingImgIds.push(img.id));
+    }
+
+    if (uploadedFiles.length > 0) {
+      const pushFilesToCloud = await filesCloudinary(uploadedFiles, userId);
+      const pushFilesToDB = await createBulkFiles(pushFilesToCloud);
+      pushFilesToDB.map(file => listingFilesIds.push(file.id));
+    }
+
+    const updateResult = await updateListing({
+      ...localListing,
+      imgIds: listingImgIds,
+      fileIds: listingFilesIds,
+    });
+    if (!updateResult) {
+      toast.error('Error updating listing');
+      return;
+    }
+    toast.success('Listing updated successfully');
+    setOpen({ open: false, listing: null });
   };
+
   return (
     <div className='max-w-[90vw] max-h-[90vh] bg-white rounded-2xl overflow-hidden'>
       <h1 className='text-center p-4 bg-slate-100' style={{ borderBottom: '1px solid var(--primary)' }}>
@@ -59,7 +84,7 @@ const ListingModal = ({ listing, userId }: Props) => {
       </h1>
       <div className={'flex items-center max-w-7xl max-lg:flex-wrap gap-6 p-5  overflow-y-scroll max-h-[90vh] '}>
         <div className={'max-w-md w-full min-w-96 max-h-md h-full min-h-96 mx-auto'}>
-          <ImageSlider images={listing.images} />
+          <ImageSlider images={listingImgs} />
         </div>
         <div className={'flex flex-col min-w-96 max-w-md py-5 w-full gap-5 mx-auto'}>
           <EditableTextField
@@ -106,18 +131,32 @@ const ListingModal = ({ listing, userId }: Props) => {
           </TextField>
           <UploadImage
             userId={userId}
-            errors={errors}
-            setErrors={setErrors}
-            imgFiles={imgFiles}
-            setImgFiles={setImgFiles}
+            imgFiles={uploadedImgs}
+            setImgFiles={setUploadedImgs}
+            selectedFromMedia={listingImgs}
+            setSelectedFromMedia={setListingImgs}
           />
           <UploadProduct
             userId={userId}
-            errors={errors}
-            setErrors={setErrors}
-            productFiles={productFiles}
-            setProductFiles={setProductFiles}
+            productFiles={uploadedFiles}
+            setProductFiles={setUploadedFiles}
+            selectedFromFiles={listingFiles}
+            setSelectedFromFiles={setListingFiles}
           />
+          <div
+            className={'flex items-center gap-2 py-3 px-6 rounded-lg'}
+            style={{ border: '1px solid var(--primary05)' }}
+          >
+            <p className={'font-medium '} style={{ color: 'var(--primary)' }}>
+              Listing Status
+            </p>
+            <Switch
+              checked={localListing.status === 'active'}
+              onChange={() =>
+                setLocalListing(prev => ({ ...prev, status: prev.status === 'active' ? 'inactive' : 'active' }))
+              }
+            />
+          </div>
         </div>
       </div>
       <div className='m-4'>

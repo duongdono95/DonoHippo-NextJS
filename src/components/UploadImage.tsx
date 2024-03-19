@@ -24,12 +24,12 @@ export const VisuallyHiddenInput = styled('input')({
 
 interface Props {
   userId: string;
-  errors: ZodIssue[];
-  setErrors: React.Dispatch<React.SetStateAction<ZodIssue[]>>;
   imgFiles: ImageInputType[];
   setImgFiles: React.Dispatch<React.SetStateAction<ImageInputType[]>>;
+  selectedFromMedia: ImageInterface[];
+  setSelectedFromMedia: React.Dispatch<React.SetStateAction<ImageInterface[]>>;
 }
-const UploadImage = ({ userId, errors, setErrors, imgFiles, setImgFiles }: Props) => {
+const UploadImage = ({ userId, imgFiles, setImgFiles, selectedFromMedia, setSelectedFromMedia }: Props) => {
   const { data: userImages } = useQuery<ImageInterface[]>({
     queryKey: ['images'],
     queryFn: () => fetcher(`/api/media/${userId}`),
@@ -62,9 +62,15 @@ const UploadImage = ({ userId, errors, setErrors, imgFiles, setImgFiles }: Props
   };
 
   return (
-    <div className='p-4 bg-slate-50 rounded-md'>
+    <div className='p-4 bg-slate-100 rounded-md'>
       <Dialog open={openMedia} onClose={() => setOpenMedia(false)}>
-        <MediaModal userId={userId} imgFiles={imgFiles} setImgFiles={setImgFiles} />
+        <MediaModal
+          userId={userId}
+          imgFiles={imgFiles}
+          setImgFiles={setImgFiles}
+          selectedFromMedia={selectedFromMedia}
+          setSelectedFromMedia={setSelectedFromMedia}
+        />
       </Dialog>
       <div className={'flex flex-col '}>
         <div className='flex justify-between items-center'>
@@ -79,13 +85,10 @@ const UploadImage = ({ userId, errors, setErrors, imgFiles, setImgFiles }: Props
       </div>
 
       <TextField
-        label={`${imgFiles.length} Uploaded Thumbnail Photo(s)`}
+        label={`${imgFiles.length + selectedFromMedia.length} Uploaded Thumbnail Photo(s)`}
         select
         fullWidth
         sx={{ marginTop: '12px' }}
-        error={errors.find(err => err.path[0] === 'name') ? true : false}
-        helperText={errors.find(err => err.path[0] === 'name')?.message}
-        onClick={() => setErrors(prev => prev.filter(err => err.path[0] !== 'name'))}
       >
         {imgFiles.map((image, index) => (
           <MenuItem key={index}>
@@ -103,6 +106,27 @@ const UploadImage = ({ userId, errors, setErrors, imgFiles, setImgFiles }: Props
                   onClick={e => {
                     e.stopPropagation();
                     setImgFiles(prev => prev.filter(img => img.name !== image.name));
+                  }}
+                >
+                  <Trash size={20} />
+                </IconButton>
+              </div>
+            </div>
+          </MenuItem>
+        ))}
+
+        {selectedFromMedia.map((image, index) => (
+          <MenuItem key={index}>
+            <div className={'flex gap-4 hover:bg-slate-200 rounded-lg   p-2  w-full'}>
+              <div className={'relative w-20 h-20  rounded-lg overflow-hidden'}>
+                <Image src={image.imageUrl} alt={image.name} fill />
+              </div>
+              <div className={'flex-grow flex justify-between items-center'}>
+                <p className={'flex-grow truncate max-w-40'}>{image.name}</p>
+                <IconButton
+                  onClick={e => {
+                    e.stopPropagation();
+                    setSelectedFromMedia(prev => prev.filter(img => img.name !== image.name));
                   }}
                 >
                   <Trash size={20} />

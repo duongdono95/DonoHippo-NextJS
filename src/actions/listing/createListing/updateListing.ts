@@ -1,47 +1,35 @@
 'use server';
 import { revalidatePath } from 'next/cache';
 import { db } from '@/libs/db';
-import { FullListingType } from '@/app/products/[userId]/_components/ProductPageContent';
-import { File, Image } from '@prisma/client';
+import { FileInterface, ImageInterface, ListingInterface } from '@prisma/client';
 export const updateListing = async (
-  inputData: FullListingType,
-  newImages?: Pick<Image, 'name' | 'imageUrl' | 'userId'>[],
-  newFiles?: Pick<File, 'name' | 'fileUrl' | 'userId'>[],
+  inputData: ListingInterface,
 ) => {
   try {
-    const updateListingResult = await db.listing.update({
+    const updateListingResult = await db.listingInterface.update({
       where: {
         id: inputData.id,
       },
       data: {
-        name: inputData.name,
         userId: inputData.userId,
-        tag: inputData.tag,
+        name: inputData.name,
         description: inputData.description,
+        price: inputData.price,
+        imgIds: inputData.imgIds,
+        fileIds: inputData.fileIds,
+        tag: inputData.tag,
+        status: inputData.status,
         createdAt: inputData.createdAt,
-        updatedAt: new Date().toISOString(),
+        updatedAt: new Date(),
       },
     });
-    const updateImagesResult = await db.image.updateMany({
-      data: inputData.images,
-    });
-    const updateFilesResult = await db.file.updateMany({
-      data: inputData.files,
-    });
-
     console.log(updateListingResult);
-    console.log(updateImagesResult);
-    console.log(updateFilesResult);
     revalidatePath(`/products/${inputData.userId}`);
-    return {
-      updateListingResult: updateListingResult,
-      updateImagesResult: updateImagesResult,
-      updateFilesResult: updateFilesResult,
-    };
+    return updateListingResult
   } catch (e) {
     console.log(e);
     return {
-      error: 'Error creating product listing. Please try again.',
+      error: 'Error Updating product listing. Please try again.',
     };
   }
 };
