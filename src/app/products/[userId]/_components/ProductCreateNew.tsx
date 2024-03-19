@@ -1,7 +1,7 @@
 'use client';
 import React, { Suspense, useRef, useState } from 'react';
 import { Button, MenuItem, TextField } from '@mui/material';
-import { File as FileType, Image } from '@prisma/client';
+
 import UploadImage from '@/components/UploadImage';
 
 import { Loader2 } from 'lucide-react';
@@ -16,15 +16,17 @@ import { createListing } from '@/actions/listing/createListing/createListing';
 interface Props {
   userId: string;
 }
-export type ImageFileInterface = {
+export type ImageInputType = {
   userId: string;
   name: string;
-  file: File;
+  file: File | null;
+  fileUrl?: string;
 };
-export type ProductFileInterface = {
+export type ProductInputType = {
   userId: string;
   name: string;
-  file: FileType;
+  file: File | null;
+  fileUrl?: string;
 };
 export const listingTags: ('Digital Image' | 'Digital Product')[] = ['Digital Image', 'Digital Product'];
 
@@ -41,26 +43,27 @@ const ProductCreateNew = ({ userId }: Props) => {
   const [form, setForm] = React.useState<ProductInterface>(emptyForm);
   const [errors, setErrors] = useState<ZodIssue[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [imgFiles, setImgFiles] = useState<ImageFileInterface[]>([]);
-  const [productFiles, setProductFiles] = useState<ProductFileInterface[]>([]);
+  const [imgFiles, setImgFiles] = useState<ImageInputType[]>([]);
+  const [productFiles, setProductFiles] = useState<ProductInputType[]>([]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (imgFiles.length === 0 || productFiles.length === 0) return;
     setIsLoading(true);
 
-    if (imgFiles.length === 0 || productFiles.length === 0) return;
-    const uploadImagesResult = await uploadImagesToCloud(imgFiles, form);
+    const uploadImagesResult = await uploadImagesToCloud(imgFiles, form.userId);
     if (!uploadImagesResult || uploadImagesResult.length === 0) {
       toast.error('Error uploading Images');
       return setIsLoading(false);
     }
 
-    const uploadFileResult = await uploadFilesToCloud(productFiles, form);
+    const uploadFileResult = await uploadFilesToCloud(productFiles, form.userId);
     if (!uploadFileResult || uploadFileResult.length === 0) {
       toast.error('Error uploading files');
       return setIsLoading(false);
     }
-
+    console.log(uploadImagesResult);
+    console.log(uploadFileResult);
     const newForm: ProductInterface = {
       ...form,
       images: uploadImagesResult,

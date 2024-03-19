@@ -5,4 +5,4 @@ export const ImageSchema = z.object({
   name: z.string(),
   imageUrl: z.string(),
 });
-export type ImageInterface = z.infer<typeof ImageSchema>;
+export type ImageSchemaT = z.infer<typeof ImageSchema>;

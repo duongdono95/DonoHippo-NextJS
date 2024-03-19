@@ -1,7 +1,7 @@
 import { fileSchema } from '@/actions/File/schema';
 import { ImageSchema } from '@/actions/Image/schema';
 import { TValidateDataHook } from '@/hooks/validateDataHook';
-import { Listing } from '@prisma/client';
+import { FileInterface, ImageInterface, ListingInterface } from '@prisma/client';
 import { z } from 'zod';
 
 export const productSchema = z.object({
@@ -22,7 +22,12 @@ export const productSchema = z.object({
 
 export type ProductInterface = z.infer<typeof productSchema>;
 
-export type ReturnT = TValidateDataHook<ProductInterface, Listing> & {
+export type ReturnT = TValidateDataHook<ProductInterface, ListingInterface> & {
   error?: string;
-  data?: Listing;
+  data?: ListingInterface;
 };
+
+export type FullListingType = {
+  images: ImageInterface[];
+  files: FileInterface[];
+} & ListingInterface;

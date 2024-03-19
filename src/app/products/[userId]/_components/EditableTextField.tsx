@@ -23,6 +23,7 @@ const EditableTextField = ({ fullWidth, name, type, value, label, onChangeFuncti
           name={name}
           label={label}
           value={value}
+          size='small'
           onChange={e => onChangeFunction(e)}
           InputProps={{
             readOnly: readOnly,

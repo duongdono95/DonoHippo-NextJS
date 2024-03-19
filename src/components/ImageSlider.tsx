@@ -1,6 +1,6 @@
 'use client';
 import { db } from '@/libs/db';
-import { Image as ImageType, Listing } from '@prisma/client';
+import { ImageInterface } from '@prisma/client';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -11,7 +11,7 @@ import { Pagination } from 'swiper/modules';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/libs/utils';
 interface Props {
-  images: ImageType[];
+  images: ImageInterface[];
 }
 
 const ImageSlider = ({ images }: Props) => {
@@ -42,6 +42,7 @@ const ImageSlider = ({ images }: Props) => {
         <button
           onClick={e => {
             e.preventDefault();
+            e.stopPropagation();
             swiper?.slideNext();
           }}
           className={cn(activeStyles, 'right-3 transition', {
@@ -55,6 +56,7 @@ const ImageSlider = ({ images }: Props) => {
         <button
           onClick={e => {
             e.preventDefault();
+            e.stopPropagation();
             swiper?.slidePrev();
           }}
           className={cn(activeStyles, 'left-3 transition', {

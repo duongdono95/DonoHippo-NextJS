@@ -13,7 +13,7 @@ interface Props {
 
 const ProductPage = async ({ params }: Props) => {
   const { userId } = params;
-  const products = await db.listing.findMany({
+  const products = await db.listingInterface.findMany({
     where: {
       userId: userId,
     },
@@ -22,6 +22,7 @@ const ProductPage = async ({ params }: Props) => {
       files: true,
     },
   });
+  console.log(products);
   if (!userId) {
     redirect('/sign-in');
   }

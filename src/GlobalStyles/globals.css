@@ -35,15 +35,15 @@
     --radius: 0.5rem;
 
     --primary: rgba(var(--primary-code), 1);
-    --primary09: rgba(var(--primary), 0.9);
-    --primary08: rgba(var(--primary), 0.8);
-    --primary07: rgba(var(--primary), 0.7);
-    --primary06: rgba(var(--primary), 0.6);
-    --primary05: rgba(var(--primary), 0.5);
-    --primary04: rgba(var(--primary), 0.4);
-    --primary03: rgba(var(--primary), 0.3);
-    --primary02: rgba(var(--primary), 0.2);
-    --primary01: rgba(var(--primary), 0.1);
+    --primary09: rgba(var(--primary-code), 0.9);
+    --primary08: rgba(var(--primary-code), 0.8);
+    --primary07: rgba(var(--primary-code), 0.7);
+    --primary06: rgba(var(--primary-code), 0.6);
+    --primary05: rgba(var(--primary-code), 0.5);
+    --primary04: rgba(var(--primary-code), 0.4);
+    --primary03: rgba(var(--primary-code), 0.3);
+    --primary02: rgba(var(--primary-code), 0.2);
+    --primary01: rgba(var(--primary-code), 0.1);
 
     --secondary09: rgba(var(--secondary-code), 0.9);
     --secondary08: rgba(var(--secondary-code), 0.8);
@@ -132,14 +132,12 @@ body {
   text-rendering: optimizespeed;
   overflow-y: overlay;
   height: 100%;
-  color: var(--black07)
+  color: var(--black07);
 }
 
 p {
-  font-size: 14px
+  font-size: 14px;
 }
-
-
 
 a {
   text-decoration: none;

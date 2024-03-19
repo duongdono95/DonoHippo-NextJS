@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { Button, IconButton, MenuItem, TextField } from '@mui/material';
+import { Button, Dialog, IconButton, MenuItem, Modal, TextField, styled } from '@mui/material';
 import Image from 'next/image';
-import { Check, Trash } from 'lucide-react';
+import { Check, Trash, CloudUploadIcon } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { ZodIssue } from 'zod';
 import { ProductFileInterface } from '@/app/products/[userId]/_components/ProductCreateNew';
+import { VisuallyHiddenInput } from './UploadImage';
+import FileModal from './modals/FileModal';
 
 interface Props {
   userId: string;
@@ -14,6 +16,7 @@ interface Props {
   setProductFiles: React.Dispatch<React.SetStateAction<ProductFileInterface[]>>;
 }
 const UploadProduct = ({ userId, errors, setErrors, productFiles, setProductFiles }: Props) => {
+  const [openMedia, setOpenMedia] = useState<boolean>(false);
   const maxImagesUpload: number = 10;
   const maxSizeInMB: number = 10;
   const maxSizeInBytes: number = maxSizeInMB * 1024 * 1024;
@@ -36,31 +39,21 @@ const UploadProduct = ({ userId, errors, setErrors, productFiles, setProductFile
 
   return (
     <div className='p-4 bg-slate-50 rounded-md'>
-      <div className={'flex justify-between items-center'}>
-        <div>
-          {productFiles.length > 0 && (
-            <div className={'truncate max-w-28 flex items-center gap-2'}>
-              <div className='w-5 h-5'>
-                <Check size={20} className={'text-green-500'} />
-              </div>
-              <p className={'font-medium truncate'}>{productFiles[productFiles.length - 1].name}</p>
-            </div>
-          )}
-        </div>
-        <label>
-          <Button variant='outlined' component='span'>
-            Upload Product File
-            <input
-              hidden
-              type='file'
-              multiple
-              onChange={handleOnAddImage}
-              accept='.zip,.rar,.7zip'
-              style={{ display: 'none' }}
-            />
+      <Dialog open={openMedia} onClose={() => setOpenMedia(false)}>
+        <FileModal userId={userId} productFiles={productFiles} setProductFiles={setProductFiles} />
+      </Dialog>
+      <div className={'flex flex-col '}>
+        <div className='flex justify-between items-center'>
+          <Button onClick={() => setOpenMedia(true)} variant='text'>
+            Add from Files
           </Button>
-        </label>
+          <Button component='label' role={undefined} variant='outlined' tabIndex={-1} startIcon={<CloudUploadIcon />}>
+            Upload file
+            <VisuallyHiddenInput type='file' onChange={handleOnAddImage} accept='.zip,.rar,.7zip' />
+          </Button>
+        </div>
       </div>
+
       <TextField
         label={`${productFiles.length} Uploaded Compressed File(s)`}
         select

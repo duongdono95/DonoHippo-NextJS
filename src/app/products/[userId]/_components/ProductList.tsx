@@ -1,13 +1,10 @@
 'use client';
-import ImageSlider from '@/app/products/[userId]/_components/ImageSlider';
-import { Image as ImageType, Listing } from '@prisma/client';
+import ImageSlider from '@/components/ImageSlider';
 import React, { useState } from 'react';
-import Image from 'next/image';
-import { Dialog, Modal, Tooltip } from '@mui/material';
+import { Modal, Tooltip } from '@mui/material';
 import { formatPrice } from '@/hooks/utils';
-import ListingModal from './ListingModal';
-import { FullListingType } from './ProductPageContent';
-import { toast } from 'react-toastify';
+import ListingModal from '../../../../components/modals/ListingModal';
+import { FullListingType } from '@/actions/listing/createListing/schema';
 
 interface Props {
   userId: string;
@@ -22,13 +19,6 @@ const ProductList = ({ userId, products }: Props) => {
     open: false,
     listing: null,
   });
-  const notFoundToast = () => {
-    toast.error('Listing not found, please try again later.');
-    return setOpen({
-      open: false,
-      listing: null,
-    });
-  };
   return (
     <div className=' w-full h-full'>
       <h3 className='text-center p-4 opacity-70'>Your Inventory</h3>
@@ -44,7 +34,9 @@ const ProductList = ({ userId, products }: Props) => {
               })
             }
           >
-            <ImageSlider images={product.images} />
+            <div className='max-w-sm'>
+              <ImageSlider images={product.images} />
+            </div>
             <h3 className='text-xl py-2 opacity-70'>{product.name}</h3>
             <Tooltip placement='right-start' title={product.description}>
               <p className='opacity-70 truncate'>{product.description}</p>
