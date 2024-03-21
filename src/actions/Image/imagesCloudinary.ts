@@ -21,17 +21,21 @@ export const imagesCloudinary = async (imgs: ImageInputType[], userId: string) =
           userId: userId,
           name: img.name,
           imageUrl: data.secure_url,
+          publicId: data.public_id,
+          signature: data.signature,
         });
+        console.log(data);
       } catch (error) {
         console.error('Error uploading image:', error);
       }
     }
     if (img.fileUrl) {
-      console.log(img);
       resultArr.push({
         userId: userId,
         name: img.name,
         imageUrl: img.fileUrl,
+        publicId: img.publicId,
+        signature: img.signature,
       });
     }
   }

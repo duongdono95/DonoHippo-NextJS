@@ -7,14 +7,6 @@ import Link from 'next/link';
 
 const NavBar = () => {
   const user = auth();
-  // console.log(user);
-  // if (user && user.userId) {
-  //   const getUser = async () => {
-  //     const test = await clerkClient.users.getUser(user.userId);
-  //     console.log(test.emailAddresses[0].emailAddress);
-  //   };
-  //   getUser();
-  // }
   const isSeller = true;
   return (
     <div

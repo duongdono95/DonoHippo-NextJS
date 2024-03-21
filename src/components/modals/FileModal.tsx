@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 import { fetcher } from '@/hooks/fetcher';
-import { ProductInputType } from '@/app/products/[userId]/_components/ProductCreateNew';
+import { FileInputType } from '@/app/products/[userId]/_components/ProductCreateNew';
 import { CircleCheck, FileCog } from 'lucide-react';
 import { FileInterface } from '@prisma/client';
 

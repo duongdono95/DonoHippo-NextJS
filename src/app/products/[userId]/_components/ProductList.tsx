@@ -8,30 +8,23 @@ import { FileInterface, ImageInterface, ListingInterface } from '@prisma/client'
 import { useQuery } from '@tanstack/react-query';
 import { fetcher } from '@/hooks/fetcher';
 import { productPageStore } from './store-product-page';
-import { ImageInputType, ProductInputType } from './ProductCreateNew';
+import { ImageInputType, FileInputType } from './ProductCreateNew';
+import { BadgeDollarSign } from 'lucide-react';
 
 interface Props {
   userId: string;
+  userListings: ListingInterface[] | undefined;
+  userFiles: FileInterface[] | undefined;
+  userImages: ImageInterface[] | undefined;
 }
 export interface OpenT {
   open: boolean;
   listing: ListingInterface | null;
 }
 
-const ProductList = ({ userId }: Props) => {
+const ProductList = ({ userId, userListings, userFiles, userImages }: Props) => {
   const { setActive } = productPageStore();
-  const { data: userImages } = useQuery<ImageInterface[]>({
-    queryKey: ['images'],
-    queryFn: () => fetcher(`/api/media/${userId}`),
-  });
-  const { data: userFiles } = useQuery<FileInterface[]>({
-    queryKey: ['files'],
-    queryFn: () => fetcher(`/api/files/${userId}`),
-  });
-  const { data: userListings, isLoading } = useQuery<ListingInterface[]>({
-    queryKey: ['listings'],
-    queryFn: () => fetcher(`/api/listings/${userId}`),
-  });
+
   const [open, setOpen] = useState<OpenT>({
     open: false,
     listing: null,
@@ -40,7 +33,7 @@ const ProductList = ({ userId }: Props) => {
 
   const [listingFiles, setListingFiles] = useState<FileInterface[]>([]);
 
-  if (!userListings || !userImages || !userFiles) {
+  if (!userListings || !userImages || !userFiles || userListings.length === 0) {
     return (
       <div className='w-full h-full flex items-center justify-center'>
         <p>
@@ -56,14 +49,15 @@ const ProductList = ({ userId }: Props) => {
   return (
     <div className=' w-full h-full'>
       <h3 className='text-center p-4 opacity-70'>Your Inventory</h3>
-      <div className='flex gap-4 p-4 align-middle flex-wrap'>
+
+      <div className=' flex gap-8 p-4 align-middle flex-wrap'>
         {userListings.map(listing => {
           const listingImgs = userImages.filter(img => listing.imgIds.includes(img.id));
           const listingFiles = userFiles.filter(file => listing.fileIds.includes(file.id));
           return (
             <div
               key={listing.id}
-              className='bg-gray-100 p-4 w-1/4 rounded-md shadow-md cursor-pointer hover:shadow-xl hover:scale-105 transition-all'
+              className='bg-gray-100 relative min-w-52 p-4 w-1/4 rounded-md shadow-md cursor-pointer hover:shadow-xl hover:scale-105 transition-all'
               onClick={() => {
                 setOpen({
                   open: true,
@@ -73,6 +67,16 @@ const ProductList = ({ userId }: Props) => {
                 setListingFiles(listingFiles);
               }}
             >
+              {listing.status === 'active' ? (
+                <div
+                  className='absolute -top-4 -right-4 w-8 h-8 flex items-center justify-center rounded-full shadow-lg'
+                  style={{ backdropFilter: 'blur(10px)', backgroundColor: 'var(--primary05)' }}
+                >
+                  <Tooltip title="Item's listed">
+                    <BadgeDollarSign color='white' />
+                  </Tooltip>
+                </div>
+              ) : null}
               <div className='max-w-sm'>
                 <ImageSlider images={listingImgs} />
               </div>

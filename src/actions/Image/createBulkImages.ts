@@ -2,7 +2,6 @@
 import { ImageSchemaT } from './schema';
 import { db } from '@/libs/db';
 export const createBulkImages = async (images: ImageSchemaT[]) => {
-  console.log(images)
   const imageIds = [];
 
   for (const image of images) {

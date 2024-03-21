@@ -16,6 +16,7 @@ enum ListingStatus {
 }
 
 
+
 model ListingInterface {
  id            String    @id @default(auto()) @map("_id") @db.ObjectId
   userId        String    @unique
@@ -29,12 +30,17 @@ model ListingInterface {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
-
+type Cloud {
+  signature String
+  publicId  String  @map("publidId") // Correcting the typo from your example
+}
 model ImageInterface {
   id            String    @id @default(auto()) @map("_id") @db.ObjectId
   userId        String    @unique
   name          String
   imageUrl      String
+  publicId      String
+  signature     String
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 }
@@ -44,6 +50,8 @@ model FileInterface {
   userId        String    @unique
   name          String
   fileUrl       String
+  publicId      String
+  signature     String
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }

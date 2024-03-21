@@ -10,8 +10,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { GlobalTheme } from './GlobalTheme';
 import { ClerkProvider } from '@clerk/nextjs';
 
-const queryClient = new QueryClient();
 const Provider = ({ children }: PropsWithChildren) => {
+  const queryClient = new QueryClient();
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={GlobalTheme}>

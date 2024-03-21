@@ -1,13 +1,9 @@
 'use client';
 import React, { useState } from 'react';
 import ImageSlider from '../ImageSlider';
-import { Button, MenuItem, Switch, TextField } from '@mui/material';
+import { Button, MenuItem, Modal, Switch, TextField } from '@mui/material';
 import EditableTextField from '../../app/products/[userId]/_components/EditableTextField';
-import {
-  ImageInputType,
-  ProductInputType,
-  listingTags,
-} from '../../app/products/[userId]/_components/ProductCreateNew';
+import { ImageInputType, FileInputType, listingTags } from '../../app/products/[userId]/_components/ProductCreateNew';
 import UploadImage from '../UploadImage';
 
 import { ImageInterface, ListingInterface, FileInterface } from '@prisma/client';
@@ -19,6 +15,9 @@ import { filesCloudinary } from '@/actions/File/filesCloudinary';
 import { createBulkFiles } from '@/actions/File/createBulkFiles';
 import { updateListing } from '@/actions/listing/createListing/updateListing';
 import { OpenT } from '@/app/products/[userId]/_components/ProductList';
+import { useQueryClient } from '@tanstack/react-query';
+import { Trash } from 'lucide-react';
+import { deleteListing } from '@/actions/listing/createListing/deleteListing';
 
 interface Props {
   listing: ListingInterface;
@@ -39,12 +38,14 @@ const ListingModal = ({
   setListingFiles,
   setOpen,
 }: Props) => {
+  const queryClient = useQueryClient();
   const [localListing, setLocalListing] = React.useState(listing);
   const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setLocalListing({ ...localListing, [e.target.name]: e.target.value });
   };
+  const [openModal, setOpenModal] = useState(false);
   const [uploadedImgs, setUploadedImgs] = useState<ImageInputType[]>([]);
-  const [uploadedFiles, setUploadedFiles] = useState<ProductInputType[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<FileInputType[]>([]);
   const submitForm = async () => {
     const listingImgIds: string[] = listingImgs.map(img => img.id);
     const listingFilesIds: string[] = listingFiles.map(file => file.id);
@@ -74,15 +75,49 @@ const ListingModal = ({
       return;
     }
     toast.success('Listing updated successfully');
+    queryClient.invalidateQueries({ queryKey: ['listings', 'images', 'files'] });
     setOpen({ open: false, listing: null });
   };
-
+  const handleDeleteListing = async () => {
+    console.log('executed');
+    const result = await deleteListing(listing.id);
+    console.log(result);
+    if (result) {
+      setOpenModal(false);
+      setOpen({ open: false, listing: null });
+      toast.success('Listing deleted successfully');
+    }
+  };
   return (
-    <div className='max-w-[90vw] max-h-[90vh] bg-white rounded-2xl overflow-hidden'>
+    <div className='max-w-[90vw] max-h-[90vh] bg-white rounded-2xl overflow-y-scroll'>
+      <Modal
+        open={openModal}
+        onClose={() => {
+          setOpenModal(false);
+        }}
+        sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+      >
+        <div className='min-w-[30vw] bg-white rounded-lg'>
+          <h3 className='p-4' style={{ backgroundColor: 'var(--primary01)' }}>
+            Confirm Deletion
+          </h3>
+          <p className='px-4 py-6' style={{ borderBottom: '1px solid var(--primary02)' }}>
+            Are you sure you want to delete {listing.name} listing?{' '}
+          </p>
+          <div className='flex justify-between px-4 py-2'>
+            <Button variant='outlined' onClick={() => handleDeleteListing()}>
+              Delete
+            </Button>
+            <Button variant='contained' onClick={() => setOpenModal(false)}>
+              Cancel
+            </Button>
+          </div>
+        </div>
+      </Modal>
       <h1 className='text-center p-4 bg-slate-100' style={{ borderBottom: '1px solid var(--primary)' }}>
         Listing Detail
       </h1>
-      <div className={'flex items-center max-w-7xl max-lg:flex-wrap gap-6 p-5  overflow-y-scroll max-h-[90vh] '}>
+      <div className={'flex flex-1   items-center max-lg:flex-wrap gap-6 p-5  overflow-scroll'}>
         <div className={'max-w-md w-full min-w-96 max-h-md h-full min-h-96 mx-auto'}>
           <ImageSlider images={listingImgs} />
         </div>
@@ -143,19 +178,25 @@ const ListingModal = ({
             selectedFromFiles={listingFiles}
             setSelectedFromFiles={setListingFiles}
           />
-          <div
-            className={'flex items-center gap-2 py-3 px-6 rounded-lg'}
-            style={{ border: '1px solid var(--primary05)' }}
-          >
-            <p className={'font-medium '} style={{ color: 'var(--primary)' }}>
-              Listing Status
-            </p>
-            <Switch
-              checked={localListing.status === 'active'}
-              onChange={() =>
-                setLocalListing(prev => ({ ...prev, status: prev.status === 'active' ? 'inactive' : 'active' }))
-              }
-            />
+          <div className='flex justify-between'>
+            <div
+              className={'flex items-center gap-2 py-3 px-6 rounded-lg'}
+              style={{ border: '1px solid var(--primary05)' }}
+            >
+              <p className={'font-medium '} style={{ color: 'var(--primary)' }}>
+                Listing Status
+              </p>
+              <Switch
+                checked={localListing.status === 'active'}
+                onChange={() =>
+                  setLocalListing(prev => ({ ...prev, status: prev.status === 'active' ? 'inactive' : 'active' }))
+                }
+              />
+            </div>
+            <Button variant='outlined' color='error' onClick={() => setOpenModal(true)}>
+              <Trash size={20} className='mr-2' />
+              Delete Listing
+            </Button>
           </div>
         </div>
       </div>

@@ -2,9 +2,9 @@
 import { Collapse, List, ListItemButton, ListItemText } from '@mui/material';
 import { Apple, ChevronUp } from 'lucide-react';
 import React from 'react';
-import { menuList } from './ProductPageContent';
-import { menuItemType, productPageStore } from './store-product-page';
 
+import { menuItemType, productPageStore } from './store-product-page';
+export const menuList: menuItemType[] = ['Products', 'Create New', 'Media', 'Files', 'Orders'];
 const SideBar = () => {
   const [open, setOpen] = React.useState(true);
   const { active, setActive } = productPageStore();

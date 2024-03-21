@@ -1,10 +1,8 @@
 'use server';
 import { revalidatePath } from 'next/cache';
 import { db } from '@/libs/db';
-import { FileInterface, ImageInterface, ListingInterface } from '@prisma/client';
-export const updateListing = async (
-  inputData: ListingInterface,
-) => {
+import { ListingInterface } from '@prisma/client';
+export const updateListing = async (inputData: ListingInterface) => {
   try {
     const updateListingResult = await db.listingInterface.update({
       where: {
@@ -23,9 +21,8 @@ export const updateListing = async (
         updatedAt: new Date(),
       },
     });
-    console.log(updateListingResult);
     revalidatePath(`/products/${inputData.userId}`);
-    return updateListingResult
+    return updateListingResult;
   } catch (e) {
     console.log(e);
     return {

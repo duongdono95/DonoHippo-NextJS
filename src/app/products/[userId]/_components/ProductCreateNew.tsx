@@ -27,12 +27,16 @@ export type ImageInputType = {
   name: string;
   file: File | null;
   fileUrl?: string;
+  publicId?: string;
+  signature?: string;
 };
-export type ProductInputType = {
+export type FileInputType = {
   userId: string;
   name: string;
   file: File | null;
   fileUrl?: string;
+  publicId?: string;
+  signature?: string;
 };
 export const listingTags: ('Digital Image' | 'Digital Product')[] = ['Digital Image', 'Digital Product'];
 
@@ -58,7 +62,7 @@ const ProductCreateNew = ({ userId }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [imgFiles, setImgFiles] = useState<ImageInputType[]>([]);
   const [selectedFromMedia, setSelectedFromMedia] = useState<ImageInterface[]>([]);
-  const [productFiles, setProductFiles] = useState<ProductInputType[]>([]);
+  const [productFiles, setProductFiles] = useState<FileInputType[]>([]);
   const [selectedFromFiles, setSelectedFromFiles] = useState<FileInterface[]>([]);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -67,18 +71,21 @@ const ProductCreateNew = ({ userId }: Props) => {
       setErrors(validateForm.error.errors);
       return;
     }
-    if (imgFiles.length === 0 || productFiles.length === 0)
+    if (
+      imgFiles.length === 0 &&
+      productFiles.length === 0 &&
+      selectedFromFiles.length === 0 &&
+      selectedFromFiles.length === 0
+    )
       return toast.error('Please select at least one image and one product file.');
 
     setIsLoading(true);
 
     const pushImagesToCloudResults = await imagesCloudinary(imgFiles, userId);
     const createImagesInDB = await createBulkImages(pushImagesToCloudResults);
-    if (createImagesInDB.length === 0) return toast.error('Create New Images failed, please try again.');
 
     const pushProductToCloudResults = await filesCloudinary(productFiles, userId);
     const createFilesInDB = await createBulkFiles(pushProductToCloudResults);
-    if (createFilesInDB.length === 0) return toast.error('Create New Files failed, please try again.');
 
     const createListingResult = await createListing({
       ...form,
@@ -94,6 +101,7 @@ const ProductCreateNew = ({ userId }: Props) => {
       setImgFiles([]);
       setProductFiles([]);
     }
+    console.log(createImagesInDB);
     setIsLoading(false);
   };
   return (

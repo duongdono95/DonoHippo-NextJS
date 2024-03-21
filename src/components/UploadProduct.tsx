@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { Check, Trash, CloudUploadIcon } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { ZodIssue } from 'zod';
-import { ProductInputType } from '@/app/products/[userId]/_components/ProductCreateNew';
+import { FileInputType } from '@/app/products/[userId]/_components/ProductCreateNew';
 import { VisuallyHiddenInput } from './UploadImage';
 import FileModal from './modals/FileModal';
 import { useQuery } from '@tanstack/react-query';
@@ -13,8 +13,8 @@ import { FileInterface } from '@prisma/client';
 
 interface Props {
   userId: string;
-  productFiles: ProductInputType[];
-  setProductFiles: React.Dispatch<React.SetStateAction<ProductInputType[]>>;
+  productFiles: FileInputType[];
+  setProductFiles: React.Dispatch<React.SetStateAction<FileInputType[]>>;
   selectedFromFiles: FileInterface[];
   setSelectedFromFiles: React.Dispatch<React.SetStateAction<FileInterface[]>>;
 }
@@ -41,7 +41,7 @@ const UploadProduct = ({ userId, productFiles, setProductFiles, selectedFromFile
         toast.error(`File ${file.name} already exists in your media library, please select a new file!`);
         return;
       }
-      const fileUrl: ProductInputType = {
+      const fileUrl: FileInputType = {
         userId: userId,
         name: file.name,
         file: file,

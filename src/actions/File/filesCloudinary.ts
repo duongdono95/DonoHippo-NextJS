@@ -1,6 +1,6 @@
-import { ProductInputType } from '@/app/products/[userId]/_components/ProductCreateNew';
+import { FileInputType } from '@/app/products/[userId]/_components/ProductCreateNew';
 
-export const filesCloudinary = async (files: ProductInputType[], userId: string) => {
+export const filesCloudinary = async (files: FileInputType[], userId: string) => {
   const resultArr = [];
   for (const file of files) {
     if (file.file) {
@@ -21,17 +21,20 @@ export const filesCloudinary = async (files: ProductInputType[], userId: string)
           userId: userId,
           name: file.name,
           fileUrl: data.secure_url,
+          publicId: data.public_id,
+          signature: data.signature,
         });
       } catch (error) {
         console.error('Error uploading image:', error);
       }
     }
     if (file.fileUrl) {
-      console.log(file);
       resultArr.push({
         userId: userId,
         name: file.name,
         fileUrl: file.fileUrl,
+        publicId: file.publicId,
+        signature: file.signature,
       });
     }
   }
