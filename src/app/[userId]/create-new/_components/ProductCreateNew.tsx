@@ -101,7 +101,7 @@ const ProductCreateNew = ({ userId }: Props) => {
       setImgFiles([]);
       setProductFiles([]);
     }
-    console.log(createImagesInDB);
+
     setIsLoading(false);
   };
   return (

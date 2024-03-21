@@ -5,13 +5,12 @@ import { toast } from 'react-toastify';
 
 export const deleteListing = async (id: string) => {
   try {
-    console.log(id);
     const deleteResult = await db.listingInterface.delete({
       where: {
         id: id,
       },
     });
-    console.log(deleteResult);
+
     if (!deleteResult) {
       toast.error('Error deleting Listing');
     }

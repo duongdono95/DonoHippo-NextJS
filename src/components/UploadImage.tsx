@@ -3,7 +3,7 @@ import { Button, Dialog, IconButton, MenuItem, Modal, TextField, styled } from '
 import Image from 'next/image';
 import { Check, CloudUploadIcon, Trash } from 'lucide-react';
 import { toast } from 'react-toastify';
-import { ImageInputType } from '@/app/products/[userId]/_components/ProductCreateNew';
+import { ImageInputType } from '@/app/[userId]/create-new/_components/ProductCreateNew';
 import { ZodIssue } from 'zod';
 import MediaModal from './modals/MediaModal';
 import { useQuery } from '@tanstack/react-query';

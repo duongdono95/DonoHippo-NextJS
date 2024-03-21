@@ -2,15 +2,18 @@
 import { Collapse, List, ListItemButton, ListItemText } from '@mui/material';
 import { Apple, ChevronUp } from 'lucide-react';
 import React from 'react';
+import { usePathname, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 
-import { menuItemType, productPageStore } from './store-product-page';
-export const menuList: menuItemType[] = ['Products', 'Create New', 'Media', 'Files', 'Orders'];
-const SideBar = () => {
+export type menuItemType = 'listings' | 'create-new' | 'media' | 'files' | 'orders';
+export const menuList: menuItemType[] = ['listings', 'create-new', 'media', 'files', 'orders'];
+const SideBar = ({ userId }: { userId: string }) => {
   const [open, setOpen] = React.useState(true);
-  const { active, setActive } = productPageStore();
   const handleClick = () => {
     setOpen(!open);
   };
+  const pathName = usePathname();
+  const lastSegment = pathName.split('/')[pathName.split('/').length - 1];
   return (
     <div className='h-full bg-slate-100 min-w-60 p-4'>
       <p className={'opacity-70'}>Collection</p>
@@ -41,16 +44,22 @@ const SideBar = () => {
         <Collapse in={open} timeout='auto' unmountOnExit>
           <List component='div' disablePadding>
             {menuList.map(item => (
-              <ListItemButton key={item} sx={{ pl: 5, borderRadius: '10px' }} onClick={() => setActive(item)}>
-                <p
-                  style={{
-                    color: active === item ? 'var(--primary)' : undefined,
-                  }}
-                  className={'font-medium'}
-                >
-                  {item}
-                </p>
-              </ListItemButton>
+              <Link key={item} href={`/${userId}/${item}`}>
+                <ListItemButton sx={{ pl: 5, borderRadius: '10px' }}>
+                  <p
+                    style={{
+                      color: lastSegment === item ? 'var(--primary)' : undefined,
+                    }}
+                    className={'font-medium'}
+                  >
+                    {item === 'create-new' && 'Create New'}
+                    {item === 'listings' && 'Listing'}
+                    {item === 'files' && 'Files'}
+                    {item === 'media' && 'Media'}
+                    {item === 'orders' && 'Orders'}
+                  </p>
+                </ListItemButton>
+              </Link>
             ))}
           </List>
         </Collapse>

@@ -8,7 +8,7 @@ import { CloudUploadIcon, ContactRound, ImageIcon } from 'lucide-react';
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import MediaCard from './MediaCard';
-import { ImageInputType } from './ProductCreateNew';
+import { ImageInputType } from '../../create-new/_components/ProductCreateNew';
 import { imagesCloudinary } from '@/actions/Image/imagesCloudinary';
 import { createBulkImages } from '@/actions/Image/createBulkImages';
 import deleteImage from '@/actions/Image/deleteImage';
@@ -28,7 +28,6 @@ interface Props {
 }
 
 const MediaList = ({ userId, userImages, userListings }: Props) => {
-  console.log(userImages);
   const queryClient = useQueryClient();
   const [openModal, setOpenModal] = useState<ModalStateT>({
     open: false,

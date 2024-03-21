@@ -12,10 +12,9 @@ cloudinary.config({
 });
 
 export const deleteFile = async (file: FileInterface) => {
-  console.log(file);
   try {
     const deleteInCloudResult = await cloudinary.uploader.destroy(file.publicId, { resource_type: 'raw' });
-    console.log(deleteInCloudResult);
+
     if (deleteInCloudResult.result !== 'ok') {
       return {
         result: 'failed',

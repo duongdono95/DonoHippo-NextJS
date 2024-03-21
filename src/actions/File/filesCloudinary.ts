@@ -1,4 +1,4 @@
-import { FileInputType } from '@/app/products/[userId]/_components/ProductCreateNew';
+import { FileInputType } from '@/app/[userId]/create-new/_components/ProductCreateNew';
 
 export const filesCloudinary = async (files: FileInputType[], userId: string) => {
   const resultArr = [];

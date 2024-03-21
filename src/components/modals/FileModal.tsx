@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 import { fetcher } from '@/hooks/fetcher';
-import { FileInputType } from '@/app/products/[userId]/_components/ProductCreateNew';
+import { FileInputType } from '@/app/[userId]/create-new/_components/ProductCreateNew';
 import { CircleCheck, FileCog } from 'lucide-react';
 import { FileInterface } from '@prisma/client';
 
@@ -44,7 +44,6 @@ const FileModal = ({ userId, selectedFromFiles, setSelectedFromFiles }: Props) =
                   if (isSelected) {
                     setSelectedFromFiles(prev => prev.filter(img => img.name !== file.name));
                   } else {
-                    console.log();
                     setSelectedFromFiles(prev => [...prev, file]);
                   }
                 }}

@@ -1,15 +1,12 @@
 'use client';
 import ImageSlider from '@/components/ImageSlider';
-import React, { useState } from 'react';
-import { Button, Modal, Tooltip } from '@mui/material';
 import { formatPrice } from '@/hooks/utils';
-import ListingModal from '../../../../components/modals/ListingModal';
+import { Button, Modal, Tooltip } from '@mui/material';
 import { FileInterface, ImageInterface, ListingInterface } from '@prisma/client';
-import { useQuery } from '@tanstack/react-query';
-import { fetcher } from '@/hooks/fetcher';
-import { productPageStore } from './store-product-page';
-import { ImageInputType, FileInputType } from './ProductCreateNew';
 import { BadgeDollarSign } from 'lucide-react';
+import Link from 'next/link';
+import { useState } from 'react';
+import ListingModal from '../../../../components/modals/ListingModal';
 
 interface Props {
   userId: string;
@@ -23,8 +20,6 @@ export interface OpenT {
 }
 
 const ProductList = ({ userId, userListings, userFiles, userImages }: Props) => {
-  const { setActive } = productPageStore();
-
   const [open, setOpen] = useState<OpenT>({
     open: false,
     listing: null,
@@ -38,8 +33,8 @@ const ProductList = ({ userId, userListings, userFiles, userImages }: Props) => 
       <div className='w-full h-full flex items-center justify-center'>
         <p>
           No Listing was found, lets{' '}
-          <Button variant={'text'} onClick={() => setActive('Create New')}>
-            create a new Listing
+          <Button variant={'text'}>
+            <Link href={'/create-new'}>create a new Listing</Link>
           </Button>
           !
         </p>

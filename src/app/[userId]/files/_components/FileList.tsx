@@ -12,7 +12,7 @@ import { CloudUploadIcon, ContactRound, File } from 'lucide-react';
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import FileCard from './FileCard';
-import { FileInputType } from './ProductCreateNew';
+import { FileInputType } from '../create-new/_components/ProductCreateNew';
 
 export interface ModalStateT {
   open: boolean;

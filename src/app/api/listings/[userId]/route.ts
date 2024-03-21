@@ -23,23 +23,3 @@ export async function GET(req: Request, { params }: Props) {
     return new NextResponse('Internal Error', { status: 500 });
   }
 }
-
-// export async function PUT(req: Request, { params }: Props) {
-
-//   if (!listing) return new NextResponse('Internal Error', { status: 401 });
-//   if (!params.userId) return new NextResponse('Unauthrorized', { status: 401 });
-//   try {
-//     const updateResult = await db.listingInterface.update({
-//       where: {
-//         id: listing.id
-//       },
-//       data: {
-//         createdAt: listing.createdAt
-//       }
-//     });
-//     return Response.json(updateResult);
-//   } catch (e) {
-//     console.log(e);
-//     return new NextResponse('Internal Error', { status: 500 });
-//   }
-// }

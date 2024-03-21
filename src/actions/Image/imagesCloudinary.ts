@@ -1,4 +1,4 @@
-import { ImageInputType } from '@/app/products/[userId]/_components/ProductCreateNew';
+import { ImageInputType } from '@/app/[userId]/create-new/_components/ProductCreateNew';
 
 export const imagesCloudinary = async (imgs: ImageInputType[], userId: string) => {
   const resultArr = [];
@@ -24,7 +24,6 @@ export const imagesCloudinary = async (imgs: ImageInputType[], userId: string) =
           publicId: data.public_id,
           signature: data.signature,
         });
-        console.log(data);
       } catch (error) {
         console.error('Error uploading image:', error);
       }

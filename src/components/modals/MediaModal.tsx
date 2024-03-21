@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 import { fetcher } from '@/hooks/fetcher';
 import Image from 'next/image';
-import { ImageInputType } from '@/app/products/[userId]/_components/ProductCreateNew';
+import { ImageInputType } from '@/app/[userId]/create-new/_components/ProductCreateNew';
 import { CircleCheck } from 'lucide-react';
 import { ImageInterface } from '@prisma/client';
 import MaxWidthWrapper from '../MaxWidthWrapper';

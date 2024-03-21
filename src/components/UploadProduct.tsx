@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { Check, Trash, CloudUploadIcon } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { ZodIssue } from 'zod';
-import { FileInputType } from '@/app/products/[userId]/_components/ProductCreateNew';
+import { FileInputType } from '@/app/[userId]/create-new/_components/ProductCreateNew';
 import { VisuallyHiddenInput } from './UploadImage';
 import FileModal from './modals/FileModal';
 import { useQuery } from '@tanstack/react-query';

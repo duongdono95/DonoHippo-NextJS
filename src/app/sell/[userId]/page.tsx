@@ -34,7 +34,7 @@ const SalePage = ({ params }: Props) => {
           <p>You have not added any products to sell yet.</p>
 
           <Button variant='outlined' sx={{ marginTop: '16px' }}>
-            <Link href={`/products/${userId}`}> Add a product</Link>
+            <Link href={`/${userId}/create-new`}> Add a product</Link>
           </Button>
 
           <div className='relative h-96 w-96 mx-auto'>

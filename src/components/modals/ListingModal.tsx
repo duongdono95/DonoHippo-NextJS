@@ -2,8 +2,8 @@
 import React, { useState } from 'react';
 import ImageSlider from '../ImageSlider';
 import { Button, MenuItem, Modal, Switch, TextField } from '@mui/material';
-import EditableTextField from '../../app/products/[userId]/_components/EditableTextField';
-import { ImageInputType, FileInputType, listingTags } from '../../app/products/[userId]/_components/ProductCreateNew';
+import EditableTextField from '../../app/[userId]/_components/EditableTextField';
+import { ImageInputType, FileInputType, listingTags } from '../../app/[userId]/create-new/_components/ProductCreateNew';
 import UploadImage from '../UploadImage';
 
 import { ImageInterface, ListingInterface, FileInterface } from '@prisma/client';
@@ -14,7 +14,7 @@ import { createBulkImages } from '@/actions/Image/createBulkImages';
 import { filesCloudinary } from '@/actions/File/filesCloudinary';
 import { createBulkFiles } from '@/actions/File/createBulkFiles';
 import { updateListing } from '@/actions/listing/createListing/updateListing';
-import { OpenT } from '@/app/products/[userId]/_components/ProductList';
+import { OpenT } from '@/app/[userId]/listings/_components/ProductList';
 import { useQueryClient } from '@tanstack/react-query';
 import { Trash } from 'lucide-react';
 import { deleteListing } from '@/actions/listing/createListing/deleteListing';
@@ -79,9 +79,8 @@ const ListingModal = ({
     setOpen({ open: false, listing: null });
   };
   const handleDeleteListing = async () => {
-    console.log('executed');
     const result = await deleteListing(listing.id);
-    console.log(result);
+
     if (result) {
       setOpenModal(false);
       setOpen({ open: false, listing: null });
