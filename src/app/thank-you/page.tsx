@@ -10,7 +10,7 @@ import { FileInterface } from '@prisma/client';
 import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import { Suspense, useEffect } from 'react';
-const page = () => {
+const Page = () => {
   const { items, clearCart } = useCart();
   const totalPrice = items.reduce((acc, item) => acc + item.listing.price, 0);
   const { data } = useQuery<FileInterface[]>({
@@ -103,4 +103,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

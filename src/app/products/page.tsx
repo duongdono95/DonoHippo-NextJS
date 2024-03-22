@@ -29,8 +29,8 @@ const page = async () => {
         {allListings.map(listing => {
           const images = allImages.filter(img => listing.imgIds.includes(img.id));
           return (
-            <Link href={`/products/${listing.id}`}>
-              <ProductCard key={listing.id} images={images} listing={listing} />
+            <Link key={listing.id} href={`/products/${listing.id}`}>
+              <ProductCard images={images} listing={listing} />
             </Link>
           );
         })}

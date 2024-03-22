@@ -40,7 +40,7 @@ const page = async ({ params }: Props) => {
   if (!listing || !listingImages)
     return (
       <MaxWidthWrapper>
-        <p>Sorry, The listing wasn't found, please click here to return the previous page</p>
+        <p>Sorry, The listing was not found, please click here to return the previous page</p>
       </MaxWidthWrapper>
     );
   return <ProductContent images={images} listing={listing} listingImages={listingImages} listings={listings} />;
