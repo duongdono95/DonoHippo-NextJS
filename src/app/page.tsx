@@ -4,7 +4,7 @@ import { db } from '@/libs/db';
 import { Button } from '@mui/material';
 import { ArrowRight } from 'lucide-react';
 
-export const Page = async () => {
+export const page = async () => {
   const allListing = await db.listingInterface.findMany({
     where: {
       status: 'active',
@@ -42,4 +42,4 @@ export const Page = async () => {
     </WrapperFullWidth>
   );
 };
-export default Page;
+export default page;
