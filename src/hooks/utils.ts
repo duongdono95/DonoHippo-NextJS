@@ -52,6 +52,5 @@ export function areObjectsEqual<T>(obj1: T, obj2: T): boolean {
     }
   }
 
-  // If we haven't returned false by now, objects are equal
   return true;
 }
