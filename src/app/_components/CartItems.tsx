@@ -4,8 +4,7 @@ import { Trash, X } from 'lucide-react';
 import React from 'react';
 import { formatPrice } from '../../hooks/utils';
 import ImageSlider from '@/components/ImageSlider';
-import Link from 'next/link';
-
+import { toast } from 'react-toastify';
 interface Props {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   userId: string;
@@ -14,6 +13,22 @@ interface Props {
 const CartItems = ({ setOpen, userId }: Props) => {
   const { items, removeItem } = useCart();
   const totalPrice = items.reduce((acc, item) => acc + item.listing.price, 0);
+  const handleSubmit = async () => {
+    toast.warning('Check out is temporary disabled for this Demo Project. you will be re-directed to final stage');
+    window.location.href = '/thank-you';
+    // const result = await stripeRedirect({
+    //   subTotal: totalPrice,
+    //   items: items.map(item => item.listing),
+    //   userId: userId,
+    // });
+    // if (result.error) {
+    //   console.log(result.error);
+    //   return;
+    // }
+    // if (result.data) {
+    //   window.location.href = result.data;
+    // }
+  };
   return (
     <div className={'min-w-96 p-4 h-full flex flex-col'}>
       <div className={'px-4 flex items-center justify-between'} style={{ borderBottom: '1px solid var(--primary02)' }}>
@@ -49,8 +64,13 @@ const CartItems = ({ setOpen, userId }: Props) => {
           {formatPrice(totalPrice)}
         </p>
       </div>
-      <Button variant={'contained'} sx={{ margin: '30px 0' }}>
-        <Link href={`/${userId}/check-out`}>Checkout</Link>
+      <Button
+        disabled={items.length === 0}
+        variant={'contained'}
+        sx={{ margin: '30px 0' }}
+        onClick={() => handleSubmit()}
+      >
+        Checkout
       </Button>
     </div>
   );

@@ -42,7 +42,10 @@ const ProductCard = ({ listing, images }: Props) => {
         <Button
           variant={'contained'}
           sx={{ margin: '20px 0' }}
-          onClick={() => addItem({ listing: listing, images: images })}
+          onClick={e => {
+            e.stopPropagation();
+            addItem({ listing: listing, images: images });
+          }}
           fullWidth
         >
           Add to cart <ShoppingCartIcon size={16} style={{ marginLeft: '5px' }} />
