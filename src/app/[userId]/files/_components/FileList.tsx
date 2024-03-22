@@ -12,7 +12,7 @@ import { CloudUploadIcon, ContactRound, File } from 'lucide-react';
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import FileCard from './FileCard';
-import { FileInputType } from '../create-new/_components/ProductCreateNew';
+import { FileInputType } from '../../create-new/_components/ProductCreateNew';
 
 export interface ModalStateT {
   open: boolean;
@@ -94,7 +94,7 @@ const FileList = ({ userId, userFiles, userListings }: Props) => {
     const pushToCloudResult = await filesCloudinary(validatedFiles, userId);
     if (pushToCloudResult.length === 0) return toast.error('Error uploading files.');
     const pushToDBResult = await createBulkFiles(pushToCloudResult);
-    if (pushToDBResult.length === 0) return toast.error('Error uploading files.');
+    if (pushToDBResult) return toast.error('Error uploading files.');
     toast.success('Uploading files successfully.');
     queryClient.invalidateQueries({ queryKey: ['files'] });
   };
@@ -143,7 +143,7 @@ const FileList = ({ userId, userFiles, userListings }: Props) => {
               className='px-4 pt-4 pb-6 text-red-400 font-normal'
               style={{ borderBottom: '1px solid var(--primary05)' }}
             >
-              This item will be deleted immediately. You can't undo this action.
+              This item will be deleted immediately. You can NOT undo this action.
             </p>
             <div className='flex items-center justify-between p-4'>
               <Button variant='text' color='secondary' onClick={() => handleDeleteFile(openModal.file)}>
@@ -166,7 +166,7 @@ const FileList = ({ userId, userFiles, userListings }: Props) => {
 
   return (
     userListings && (
-      <div className='p-4 flex items-center gap-8 flex-wrap'>
+      <div className='p-4 flex items-center justify-center gap-8 flex-wrap'>
         <Modal
           open={openModal.open}
           onClose={() => setOpenModal({ open: false, type: null, listing: null, file: null })}
@@ -188,7 +188,9 @@ const FileList = ({ userId, userFiles, userListings }: Props) => {
         </Button>
         {userFiles.map(file => {
           const attachedToListings = userListings.filter(listing => listing.fileIds.includes(file.id));
-          return <FileCard file={file} setOpenModal={setOpenModal} attachedToListings={attachedToListings} />;
+          return (
+            <FileCard key={file.id} file={file} setOpenModal={setOpenModal} attachedToListings={attachedToListings} />
+          );
         })}
       </div>
     )

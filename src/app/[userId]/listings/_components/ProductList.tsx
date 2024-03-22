@@ -30,7 +30,7 @@ const ProductList = ({ userId, userListings, userFiles, userImages }: Props) => 
 
   if (!userListings || !userImages || !userFiles || userListings.length === 0) {
     return (
-      <div className='w-full h-full flex items-center justify-center'>
+      <div className='w-full h-full flex items-center justify-center '>
         <p>
           No Listing was found, lets{' '}
           <Button variant={'text'}>
@@ -45,7 +45,7 @@ const ProductList = ({ userId, userListings, userFiles, userImages }: Props) => 
     <div className=' w-full h-full'>
       <h3 className='text-center p-4 opacity-70'>Your Inventory</h3>
 
-      <div className=' flex gap-8 p-4 align-middle flex-wrap'>
+      <div className='flex gap-8 p-4 justify-center flex-wrap'>
         {userListings.map(listing => {
           const listingImgs = userImages.filter(img => listing.imgIds.includes(img.id));
           const listingFiles = userFiles.filter(file => listing.fileIds.includes(file.id));

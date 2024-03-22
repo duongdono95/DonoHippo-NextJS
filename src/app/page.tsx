@@ -10,6 +10,15 @@ export const Home = async () => {
       status: 'active',
     },
   });
+  const allImagesIds = allListing.map(listing => listing.imgIds).flat();
+
+  const allImages = await db.imageInterface.findMany({
+    where: {
+      id: {
+        in: allImagesIds,
+      },
+    },
+  });
   return (
     <WrapperFullWidth>
       <div className='mx-auto py-8 max-w-2xl text-center'>
@@ -29,7 +38,7 @@ export const Home = async () => {
           </Button>
         </div>
       </div>
-      <ProductReel listings={allListing} />
+      <ProductReel listings={allListing} allImages={allImages} />
     </WrapperFullWidth>
   );
 };

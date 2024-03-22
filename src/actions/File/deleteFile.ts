@@ -4,6 +4,7 @@ import { FileInterface } from '@prisma/client';
 import { db } from '@/libs/db';
 
 import { v2 as cloudinary } from 'cloudinary';
+import { revalidatePath } from "next/cache";
 
 cloudinary.config({
   cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
@@ -26,7 +27,7 @@ export const deleteFile = async (file: FileInterface) => {
         id: file.id,
       },
     });
-
+    revalidatePath(`/${file.userId}/files`);
     return deleteFileInDB;
   } catch (error) {
     console.error(error);

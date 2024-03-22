@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import MediaList from './_components/MediaList';
 import { auth } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
 import { db } from '@/libs/db';
+import LoadingPage from '@/components/LoadingPage';
 
 const page = async () => {
   const user = auth();
@@ -19,7 +20,11 @@ const page = async () => {
       userId: user.userId,
     },
   });
-  return <MediaList userId={user.userId} userImages={userImages} userListings={userListings} />;
+  return (
+    <Suspense key={user.userId} fallback={<LoadingPage />}>
+      <MediaList userId={user.userId} userImages={userImages} userListings={userListings} />
+    </Suspense>
+  );
 };
 
 export default page;

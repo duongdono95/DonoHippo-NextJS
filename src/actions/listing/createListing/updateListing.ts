@@ -12,7 +12,7 @@ export const updateListing = async (inputData: ListingInterface) => {
         userId: inputData.userId,
         name: inputData.name,
         description: inputData.description,
-        price: inputData.price,
+        price: typeof inputData.price === 'number' ?  inputData.price : parseInt(inputData.price),
         imgIds: inputData.imgIds,
         fileIds: inputData.fileIds,
         tag: inputData.tag,
@@ -21,7 +21,7 @@ export const updateListing = async (inputData: ListingInterface) => {
         updatedAt: new Date(),
       },
     });
-    revalidatePath(`/products/${inputData.userId}`);
+    revalidatePath(`/${inputData.userId}/listing`);
     return updateListingResult;
   } catch (e) {
     console.log(e);

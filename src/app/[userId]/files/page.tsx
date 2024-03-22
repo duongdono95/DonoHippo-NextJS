@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import FileList from './_components/FileList';
 import { auth } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
 import { db } from '@/libs/db';
+import LoadingPage from '@/components/LoadingPage';
 
 const page = async () => {
   const user = auth();
@@ -20,9 +21,9 @@ const page = async () => {
     },
   });
   return (
-    <div>
+    <Suspense key={user.userId} fallback={<LoadingPage />}>
       <FileList userId={user.userId} userFiles={userFiles} userListings={userListings} />
-    </div>
+    </Suspense>
   );
 };
 

@@ -19,7 +19,7 @@ const EditableTextField = ({ fullWidth, name, type, value, label, onChangeFuncti
       <Tooltip placement={'bottom-end'} title={'Double Click to Edit'}>
         <TextField
           fullWidth={fullWidth}
-          type={type ? type : 'text'}
+          type={type === 'number' ? 'number' : 'text'}
           name={name}
           label={label}
           value={value}

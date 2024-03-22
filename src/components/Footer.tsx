@@ -7,7 +7,16 @@ import Link from 'next/link';
 
 const Footer = () => {
   const pathname = usePathname();
-  const pathsToMinimize = ['/verify-email', '/listings', '/files', 'create-new', 'media', '/sign-up', '/sign-in'];
+  const pathsToMinimize = [
+    '/verify-email',
+    '/listings',
+    '/files',
+    'create-new',
+    'media',
+    '/sign-up',
+    '/sign-in',
+    'check-out',
+  ];
   return (
     <footer className='bg-white'>
       {pathsToMinimize.some(path => pathname.includes(path)) ? null : (

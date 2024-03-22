@@ -4,6 +4,7 @@ import { db } from '@/libs/db';
 import { ImageInterface } from '@prisma/client';
 
 import { v2 as cloudinary } from 'cloudinary';
+import { revalidatePath } from "next/cache";
 
 cloudinary.config({
   cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
@@ -26,7 +27,7 @@ export default async function deleteImage(image: ImageInterface) {
         id: image.id,
       },
     });
-
+    revalidatePath(`/${image.userId}/media`);
     return deleteImageInDB;
   } catch (error) {
     console.error(error);

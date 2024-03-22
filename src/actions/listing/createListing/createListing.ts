@@ -12,7 +12,7 @@ export const createListing = async (inputData: ProductInterface & { imgIds: stri
     const result = await db.listingInterface.create({
       data: inputData,
     });
-    revalidatePath(`/products/${inputData.userId}`);
+    revalidatePath(`/${inputData.userId}/listings`);
     return {
       data: result,
     };

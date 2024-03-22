@@ -144,7 +144,7 @@ const MediaList = ({ userId, userImages, userListings }: Props) => {
               className='px-4 pt-4 pb-6 text-red-400 font-normal'
               style={{ borderBottom: '1px solid var(--primary05)' }}
             >
-              This item will be deleted immediately. You can't undo this action.
+              This item will be deleted immediately. You can NOT undo this action.
             </p>
             <div className='flex items-center justify-between p-4'>
               <Button variant='text' color='secondary' onClick={() => handleDeleteImage(openModal.image)}>
@@ -167,7 +167,7 @@ const MediaList = ({ userId, userImages, userListings }: Props) => {
 
   return (
     userListings && (
-      <div className='p-4 flex items-center gap-8 flex-wrap'>
+      <div className='p-4 flex items-center justify-center gap-8 flex-wrap'>
         <Modal
           open={openModal.open}
           onClose={() => setOpenModal({ open: false, type: null, listing: null, image: null })}
@@ -189,7 +189,14 @@ const MediaList = ({ userId, userImages, userListings }: Props) => {
         </Button>
         {userImages.map(image => {
           const attachedToListings = userListings.filter(listing => listing.imgIds.includes(image.id));
-          return <MediaCard image={image} setOpenModal={setOpenModal} attachedToListings={attachedToListings} />;
+          return (
+            <MediaCard
+              key={image.id}
+              image={image}
+              setOpenModal={setOpenModal}
+              attachedToListings={attachedToListings}
+            />
+          );
         })}
       </div>
     )

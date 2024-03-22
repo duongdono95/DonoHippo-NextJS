@@ -1,13 +1,12 @@
-import React from 'react';
-import { Icons } from './Icons';
-import { ShoppingCart, Store, StoreIcon } from 'lucide-react';
+import { UserButton, auth } from '@clerk/nextjs';
 import { Button, Divider, IconButton } from '@mui/material';
-import { UserButton, auth, clerkClient } from '@clerk/nextjs';
+import { Store } from 'lucide-react';
 import Link from 'next/link';
+import { Icons } from '../../components/Icons';
+import Cart from './Cart';
 
 const NavBar = () => {
   const user = auth();
-  const isSeller = true;
   return (
     <div
       className='sticky max-w-screen-xl flex items-center justify-between w-full mx-auto p-3 z-50'
@@ -27,14 +26,12 @@ const NavBar = () => {
               }}
             />
             <Divider orientation='vertical' variant='middle' flexItem />
-            <IconButton>
-              <ShoppingCart size={20} />
-            </IconButton>
+            <Cart userId={user.userId} />
             <Divider orientation='vertical' variant='middle' flexItem />
 
-            <Link href={`/sell/${user.userId}`}>
+            <Link href={`/${user.userId}/listings`}>
               <IconButton>
-                <Store size={20} />
+                <Store size={22} />
               </IconButton>
             </Link>
           </div>
