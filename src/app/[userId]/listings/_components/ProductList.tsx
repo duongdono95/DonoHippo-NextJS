@@ -34,7 +34,7 @@ const ProductList = ({ userId, userListings, userFiles, userImages }: Props) => 
         <p>
           No Listing was found, lets{' '}
           <Button variant={'text'}>
-            <Link href={'/create-new'}>create a new Listing</Link>
+            <Link href={`${userId}/create-new`}>create a new Listing</Link>
           </Button>
           !
         </p>
